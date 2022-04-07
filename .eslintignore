@@ -1,0 +1,8 @@
+node_modules/
+public/
+build/
+rollup.config.ts
+
+*.css
+*.svg
+**/*.js
