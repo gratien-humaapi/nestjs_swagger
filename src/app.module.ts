@@ -1,25 +1,15 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod
-} from "@nestjs/common";
-import { CatsModule } from "./cats/cats.module";
-import {
-  logger,
-  LoggerMiddleware
-} from "./common/middleware/logger.middleware";
+/* eslint-disable import/order */
+import { Module } from "@nestjs/common";
+import { logger } from "./common/middleware/logger.middleware";
+import { UsersModule } from "./users/users.module";
+import { PassportModule } from "@nestjs/passport";
+import { AuthService } from "./auth/auth.service";
+import { LocalStrategy } from "./auth/local.strategy";
+import { AppController } from "./app.controller";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
-  imports: [CatsModule]
+  imports: [UsersModule, PassportModule, AuthModule],
+  controllers: [AppController]
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    // consumer.apply(LoggerMiddleware).forRoutes("cats"); // for the routes cats
-    // consumer.apply(LoggerMiddleware).forRoutes(CatsController);// all the CatsController's routes
-    consumer
-      .apply(logger)
-      // .apply(LoggerMiddleware)
-      .forRoutes({ path: "cats", method: RequestMethod.GET });
-  }
-}
+export class AppModule {}
