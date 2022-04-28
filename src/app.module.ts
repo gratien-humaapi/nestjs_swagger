@@ -3,13 +3,12 @@ import { Module } from "@nestjs/common";
 import { logger } from "./common/middleware/logger.middleware";
 import { UsersModule } from "./users/users.module";
 import { PassportModule } from "@nestjs/passport";
-import { AuthService } from "./auth/auth.service";
-import { LocalStrategy } from "./auth/local.strategy";
 import { AppController } from "./app.controller";
 import { AuthModule } from "./auth/auth.module";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
-  imports: [UsersModule, PassportModule, AuthModule],
+  imports: [UsersModule, PassportModule, AuthModule, ConfigModule.forRoot()],
   controllers: [AppController]
 })
 export class AppModule {}
