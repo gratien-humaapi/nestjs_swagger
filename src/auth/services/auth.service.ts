@@ -7,9 +7,9 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { errorResponse, response } from "src/common/utils";
 import camelcaseKeys from "camelcase-keys";
+import { IAuthService, AuthClientErrorType } from "src/cognito/types";
 import { UsersService } from "../../users/users.service";
 import { IAuthConfig } from "../auth.config";
-import { AuthClientErrorType, IAuthService } from "./types";
 
 const camelCase = <T>(data: T) => camelcaseKeys(data, { deep: true });
 
@@ -49,7 +49,7 @@ export class AuthService {
     return null;
   }
 
-  adminEnableUser = async (params: IAuthService["adminEnableUserParams"]) => {
+  async adminEnableUser(params: IAuthService["adminEnableUserParams"]) {
     const { username } = params;
     try {
       const cognitoParams = {
@@ -63,7 +63,7 @@ export class AuthService {
     } catch (err) {
       return errorResponse(<AuthClientErrorType>err);
     }
-  };
+  }
   async login(user: any) {
     const payload = { username: user.username, sub: user.userId };
     return {

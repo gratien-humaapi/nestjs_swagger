@@ -1,5 +1,5 @@
 import { InternalErrorException } from "@aws-sdk/client-cognito-identity-provider/dist-types/models";
-import { AuthClientErrorType } from "./types";
+import { AuthClientErrorType } from "../types/adminTypes";
 
 export class AuthClientError extends Error {
   fault: "server" | "client";
