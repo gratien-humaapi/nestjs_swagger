@@ -1,17 +1,17 @@
 import { Module } from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
-import { ConfigModule } from "@nestjs/config";
+import { CognitoModule } from "src/cognito/cognito.module";
 import { AuthService } from "./services";
 import { LocalStrategy } from "./local.strategy";
 import { JwtStrategy } from "./jwt.strategy";
 import { UsersModule } from "../users/users.module";
 import { jwtConstants } from "./constants";
-import authConfig from "./auth.config";
+import { AuthController } from "./auth.controller";
 
 @Module({
   imports: [
-    ConfigModule.forFeature(authConfig),
+    CognitoModule,
     UsersModule,
     PassportModule,
     JwtModule.register({
@@ -20,6 +20,7 @@ import authConfig from "./auth.config";
     })
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService]
+  exports: [AuthService],
+  controllers: [AuthController]
 })
 export class AuthModule {}

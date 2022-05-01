@@ -12,6 +12,7 @@
     "baseUrl": ".",
     "incremental": true,
     "skipLibCheck": true,
+    "esModuleInterop": true, // required for camelCase
     "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,

@@ -5,6 +5,16 @@ import {
   InternalErrorException
 } from "@aws-sdk/client-cognito-identity-provider";
 
+export enum UserStatusEnum {
+  UNCONFIRMED = "UNCONFIRMED",
+  CONFIRMED = "CONFIRMED",
+  ARCHIVED = "ARCHIVED",
+  COMPROMISED = "COMPROMISED",
+  UNKNOWN = "UNKNOWN",
+  RESET_REQUIRED = "RESET_REQUIRED",
+  FORCE_CHANGE_PASSWORD = "FORCE_CHANGE_PASSWORD"
+}
+
 type CognitoClientType = InstanceType<typeof CognitoIdentityProvider>;
 
 type AdminUpdateUserUserAttributeInput = {
@@ -14,10 +24,6 @@ type AdminUpdateUserUserAttributeInput = {
 };
 
 const camelCase = <T>(data: T) => camelcaseKeys(data, { deep: true });
-
-export type AuthClientErrorType = Omit<InternalErrorException, "name"> & {
-  name: AuthExceptionName;
-};
 
 export type AttributesCognitoType = NonNullable<
   DeepNonNullable<
@@ -51,7 +57,7 @@ type AdminCreateUserParamsCamelCase = ReturnType<
   typeof adminCreateUserParamsCamelCase
 >;
 
-export type AdminCreateUserNormalizedParams = AdminCreateUserParamsCamelCase & {
+type AdminCreateUserNormalizedParams = AdminCreateUserParamsCamelCase & {
   attributes: AttributeCognitoNormalizedType[];
 };
 
@@ -71,7 +77,7 @@ type AdminDeleteUserParamsCamelCase = ReturnType<
   typeof adminDeleteUserParamsCamelCase
 >;
 
-export type AdminDeleteUserNormalizedParams = AdminDeleteUserParamsCamelCase;
+type AdminDeleteUserNormalizedParams = AdminDeleteUserParamsCamelCase;
 
 // ### Delete User type  ###  End
 
@@ -89,8 +95,7 @@ type AdminAddUserToGroupParamsCamelCase = ReturnType<
   typeof adminAddUserToGroupParamsCamelCase
 >;
 
-export type AdminAddUserToGroupNormalizedParams =
-  AdminAddUserToGroupParamsCamelCase;
+type AdminAddUserToGroupNormalizedParams = AdminAddUserToGroupParamsCamelCase;
 // ### Create Add User to Group  ###  End
 
 // ### Create List User's Groups ###  Start
@@ -107,7 +112,7 @@ type AdminListGroupsForUserParamsCamelCase = ReturnType<
   typeof adminListGroupsForUserParamsCamelCase
 >;
 
-export type AdminListGroupsForUserNormalizedParams =
+type AdminListGroupsForUserNormalizedParams =
   AdminListGroupsForUserParamsCamelCase;
 // ### Create Add User to Group  ###  End
 
@@ -125,8 +130,7 @@ type AdminEnableUserParamsCamelCase = ReturnType<
   typeof adminEnableUserParamsCamelCase
 >;
 
-export type AdminEnableDisableUserNormalizedParams =
-  AdminEnableUserParamsCamelCase;
+type AdminEnableDisableUserNormalizedParams = AdminEnableUserParamsCamelCase;
 // ### Enable / Disable User ###  End
 
 // ### Reset User Password ###  Start
@@ -143,7 +147,7 @@ type AdminResetUserPasswordParamsCamelCase = ReturnType<
   typeof adminResetUserPasswordParamsCamelCase
 >;
 
-export type AdminResetUserPasswordNormalizedParams =
+type AdminResetUserPasswordNormalizedParams =
   AdminResetUserPasswordParamsCamelCase;
 // ### Reset User Password User ###  End
 
@@ -161,8 +165,7 @@ type AdminSetUserPasswordParamsCamelCase = ReturnType<
   typeof adminSetUserPasswordParamsCamelCase
 >;
 
-export type AdminSetUserPasswordNormalizedParams =
-  AdminSetUserPasswordParamsCamelCase;
+type AdminSetUserPasswordNormalizedParams = AdminSetUserPasswordParamsCamelCase;
 // ### Set  User Password User ###  End
 
 // ### Update User Attributes ###  Start
@@ -179,14 +182,14 @@ type AdminUpdateUserAttributesParamsCamelCase = ReturnType<
   typeof adminUpdateUserAttributesParamsCamelCase
 >;
 
-export type AdminUpdateUserAttributesNormalizedParams =
+type AdminUpdateUserAttributesNormalizedParams =
   AdminUpdateUserAttributesParamsCamelCase & {
     attributes:
       | AttributeCognitoNormalizedType[]
       | PartialAttributeCognitoNormalizedType[];
   };
-
-export interface IAuthService {
+// ### Update User End ###  Start
+export interface IAdminService {
   adminCreateUserParams: AdminCreateUserNormalizedParams;
   adminDeleteUserParams: AdminDeleteUserNormalizedParams;
   adminAddUsertoGroupParams: AdminAddUserToGroupNormalizedParams;
@@ -199,44 +202,3 @@ export interface IAuthService {
   adminUpdateUserAttributesParams: AdminUpdateUserAttributesNormalizedParams;
 }
 // ### Update User Attributes ###  End
-export type AuthExceptionName =
-  | "InternalErrorException"
-  | "InvalidParameterException"
-  | "NotAuthorizedException"
-  | "ResourceNotFoundException"
-  | "TooManyRequestsException"
-  | "UserImportInProgressException"
-  | "UserNotFoundException"
-  | "InvalidLambdaResponseException"
-  | "LimitExceededException"
-  | "TooManyFailedAttemptsException"
-  | "UnexpectedLambdaException"
-  | "UserLambdaValidationException"
-  | "CodeDeliveryFailureException"
-  | "CodeDeliveryFailureException"
-  | "InvalidPasswordException"
-  | "InvalidSmsRoleAccessPolicyException"
-  | "InvalidSmsRoleTrustRelationshipException"
-  | "PreconditionNotMetException"
-  | "UnsupportedUserStateException"
-  | "UsernameExistsException"
-  | "AliasExistsException"
-  | "InvalidUserPoolConfigurationException"
-  | "MFAMethodNotFoundException"
-  | "PasswordResetRequiredException"
-  | "UserNotConfirmedException"
-  | "UserPoolAddOnNotEnabledException"
-  | "InvalidEmailRoleAccessPolicyException"
-  | "CodeMismatchException"
-  | "ExpiredCodeException"
-  | "SoftwareTokenMFANotFoundException"
-  | "ConcurrentModificationException"
-  | "GroupExistsException"
-  | "DuplicateProviderException"
-  | "UserPoolTaggingException"
-  | "InvalidOAuthFlowException"
-  | "ScopeDoesNotExistException"
-  | "UnsupportedIdentityProviderException"
-  | "UnauthorizedException"
-  | "UnsupportedOperationException"
-  | "UnsupportedTokenTypeException";

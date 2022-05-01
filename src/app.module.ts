@@ -6,10 +6,16 @@ import { PassportModule } from "@nestjs/passport";
 import { AppController } from "./app.controller";
 import { AuthModule } from "./auth/auth.module";
 import { ConfigModule } from "@nestjs/config";
-import { CognitoModule } from './cognito/cognito.module';
+import { AdminModule } from "./admin";
 
 @Module({
-  imports: [UsersModule, PassportModule, AuthModule, ConfigModule.forRoot(), CognitoModule],
+  imports: [
+    UsersModule,
+    PassportModule,
+    AuthModule,
+    ConfigModule.forRoot(),
+    AdminModule
+  ],
   controllers: [AppController]
 })
 export class AppModule {}

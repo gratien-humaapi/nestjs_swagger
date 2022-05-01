@@ -1,5 +1,8 @@
 import { InternalErrorException } from "@aws-sdk/client-cognito-identity-provider/dist-types/models";
-import { AuthClientErrorType } from "../types/adminTypes";
+
+export type AuthClientErrorType = Omit<InternalErrorException, "name"> & {
+  name: AuthExceptionName;
+};
 
 export class AuthClientError extends Error {
   fault: "server" | "client";
@@ -30,3 +33,45 @@ export class AuthClientError extends Error {
     this.type = `AUTH_ERROR-${this.name}`;
   }
 }
+
+export type AuthExceptionName =
+  | "InternalErrorException"
+  | "InvalidParameterException"
+  | "NotAuthorizedException"
+  | "ResourceNotFoundException"
+  | "TooManyRequestsException"
+  | "UserImportInProgressException"
+  | "UserNotFoundException"
+  | "InvalidLambdaResponseException"
+  | "LimitExceededException"
+  | "TooManyFailedAttemptsException"
+  | "UnexpectedLambdaException"
+  | "UserLambdaValidationException"
+  | "CodeDeliveryFailureException"
+  | "CodeDeliveryFailureException"
+  | "InvalidPasswordException"
+  | "InvalidSmsRoleAccessPolicyException"
+  | "InvalidSmsRoleTrustRelationshipException"
+  | "PreconditionNotMetException"
+  | "UnsupportedUserStateException"
+  | "UsernameExistsException"
+  | "AliasExistsException"
+  | "InvalidUserPoolConfigurationException"
+  | "MFAMethodNotFoundException"
+  | "PasswordResetRequiredException"
+  | "UserNotConfirmedException"
+  | "UserPoolAddOnNotEnabledException"
+  | "InvalidEmailRoleAccessPolicyException"
+  | "CodeMismatchException"
+  | "ExpiredCodeException"
+  | "SoftwareTokenMFANotFoundException"
+  | "ConcurrentModificationException"
+  | "GroupExistsException"
+  | "DuplicateProviderException"
+  | "UserPoolTaggingException"
+  | "InvalidOAuthFlowException"
+  | "ScopeDoesNotExistException"
+  | "UnsupportedIdentityProviderException"
+  | "UnauthorizedException"
+  | "UnsupportedOperationException"
+  | "UnsupportedTokenTypeException";

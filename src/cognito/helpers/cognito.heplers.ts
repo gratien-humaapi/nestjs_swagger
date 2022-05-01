@@ -1,10 +1,10 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import {
   AttributeCognitoNormalizedType,
   AttributesCognitoType,
   PartialAttributeCognitoNormalizedType
-} from "../types";
+} from "../services";
 
 export const attributesToStandard = (attributes: AttributesCognitoType[]) => {
   //   const normalizedAttributes = attributes.find
