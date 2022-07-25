@@ -1,10 +1,12 @@
 import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
   app.enableCors();
   app.use(cookieParser()); // Parse the `/token` refresh cookie
   /**
@@ -13,9 +15,10 @@ async function bootstrap() {
    */
   app.use(
     helmet({
-      contentSecurityPolicy: process.env.NODE_ENV === "dev" ? false : undefined,
+      contentSecurityPolicy:
+        configService.get("NODE_ENV") === "dev" ? false : undefined,
       crossOriginEmbedderPolicy:
-        process.env.NODE_ENV === "dev" ? false : undefined
+        configService.get("NODE_ENV") === "dev" ? false : undefined
     })
   ); // Set sensible headers for improved security
   await app.listen(3001);

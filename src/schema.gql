@@ -1,0 +1,32 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Author {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input CreateAuthorInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Mutation {
+  createAuthor(input: CreateAuthorInput!): Author!
+  removeAuthor(id: Int!): Author!
+  updateAuthor(input: UpdateAuthorInput!): Author!
+}
+
+type Query {
+  author(id: Int!): Author!
+
+  """test"""
+  authors: [Author!]!
+}
+
+input UpdateAuthorInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
