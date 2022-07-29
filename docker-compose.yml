@@ -19,12 +19,11 @@ services:
     image: postgres:14.4-alpine
     restart: always
     volumes:
-      - app_db:/var/lib/mysql
+      - app_db:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - docker.env
 
   app_db_client:
     image: dpage/pgadmin4
@@ -33,9 +32,8 @@ services:
       - app_db_client_config:/var/lib/pgadmin
     ports:
       - '80:80'
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=pgadmin
+    env_file:
+      - docker.env
 
 volumes:
   app_db:
