@@ -1,7 +1,8 @@
 import { ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
-import { IS_PUBLIC_KEY } from "src/common";
+import { AuthenticationError } from "apollo-server-errors";
+import { CustomContextType, IS_PUBLIC_KEY } from "src/common";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard("jwt") {
@@ -14,8 +15,12 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
       context.getHandler(),
       context.getClass()
     ]);
+    const contextType = context.getType<CustomContextType>();
     if (isPublic) {
       return true;
+    }
+    if (contextType === "graphql") {
+      throw new AuthenticationError("Your are not authenticated");
     }
     return super.canActivate(context);
   }
