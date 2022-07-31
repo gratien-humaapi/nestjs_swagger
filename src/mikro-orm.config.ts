@@ -17,9 +17,13 @@ const MikroOrmConfig: Options = {
   port: configService.get("POSTGRES_PORT"),
   // db config
   metadataProvider: TsMorphMetadataProvider,
-  debug: true,
-  loadStrategy: LoadStrategy.JOINED
+  debug: configService.get("NODE_ENV") !== "production",
+  loadStrategy: LoadStrategy.JOINED,
   // highlighter: new SqlHighlighter(),
+  migrations: {
+    path: "dist/migrations",
+    pathTs: "src/migrations"
+  }
 };
 
 export default MikroOrmConfig;

@@ -4,17 +4,16 @@ import { UsersModule } from "./users/users.module";
 import { PassportModule } from "@nestjs/passport";
 import { AppController } from "./app.controller";
 import { AuthModule } from "./auth/auth.module";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AdminModule } from "./admin";
 import { APP_GUARD } from "@nestjs/core";
 import { JwtAuthGuard } from "./common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-import { join } from "path";
-import { AuthorsModule } from "./authors/authors.module";
 import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
 import { MikroOrmMiddleware, MikroOrmModule } from "@mikro-orm/nestjs";
 import { MikroORM } from "@mikro-orm/core";
+import { StudentModule } from "./student/student.module";
 
 @Module({
   imports: [
@@ -23,17 +22,26 @@ import { MikroORM } from "@mikro-orm/core";
     AuthModule,
     ConfigModule.forRoot(),
     AdminModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), "src/schema.gql"),
-      playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
-      bodyParserConfig: false, // BodyParser should run _before_ MikroOrm middleware
-      cors: false // Cors should be handled by NestJS, not the Apollo Server
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        autoSchemaFile: true,
+        playground: false,
+        plugins:
+          configService.get("NODE_ENV") === "production"
+            ? undefined
+            : [ApolloServerPluginLandingPageLocalDefault()],
+        bodyParserConfig: false, // BodyParser should run _before_ MikroOrm middleware
+        cors: false // Cors should be handled by NestJS, not the Apollo Server
+      })
+
       // autoSchemaFile: true
     }),
-    AuthorsModule,
-    MikroOrmModule.forRoot({ autoLoadEntities: true })
+    // AuthorsModule,
+    MikroOrmModule.forRoot(),
+    StudentModule
     // DatabaseModule
     // PostsModule
   ],

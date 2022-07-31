@@ -2,11 +2,17 @@ import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { ConfigService } from "@nestjs/config";
+import express from "express";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  /**
+   * @see https://mikro-orm.io/docs/usage-with-nestjs#request-scoping-when-using-graphql
+   * or use   body-parser @see https://www.npmjs.com/package/body-parser#bodyparserrawoptions
+   */
+  app.use(express.json());
   app.enableCors();
   app.use(cookieParser()); // Parse the `/token` refresh cookie
   /**
