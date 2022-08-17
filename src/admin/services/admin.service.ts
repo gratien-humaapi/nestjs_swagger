@@ -34,4 +34,18 @@ export class AdminService {
 
     return res.data;
   };
+
+  adminUpdateTokensExpireIn = async (
+    params: IAdminService["adminUpdateTokensExpireIn"]
+  ) => {
+    const res = await this._cognitoAdminService.adminUpdateTokensExpireIn(
+      params
+    );
+    if (!isResolved(res)) {
+      const { error } = res;
+      throw new AuthClientError(error);
+    }
+
+    return res.data;
+  };
 }

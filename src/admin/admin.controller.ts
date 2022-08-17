@@ -24,4 +24,18 @@ export class AdminController {
       return <AuthClientError>err;
     }
   }
+
+  @Post("token-expirein")
+  async adminUpdateAccessTokenExpireIn(
+    @Body("accessTokenValidity") accessTokenValidity: number,
+    @Body("refreshTokenValidity") refreshTokenValidity: number
+  ) {
+    const params = { accessTokenValidity, refreshTokenValidity };
+    try {
+      const res = await this._adminService.adminUpdateTokensExpireIn(params);
+      return res;
+    } catch (err) {
+      return <AuthClientError>err;
+    }
+  }
 }

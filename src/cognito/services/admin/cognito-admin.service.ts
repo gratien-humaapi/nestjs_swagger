@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
+import {
+  CognitoIdentityProvider,
+  TimeUnitsType
+} from "@aws-sdk/client-cognito-identity-provider";
 import { errorResponse, response } from "src/common/utils";
 import camelcaseKeys from "camelcase-keys";
 import { DeepNonNullable } from "src/common";
@@ -20,17 +23,20 @@ const camelCase = <T>(data: T) => camelcaseKeys(data, { deep: true });
 export class CognitoAdminService {
   private _client: CognitoIdentityProvider;
   private _userPoolID: string;
+  private _clientId: string;
+
   constructor(private configService: ConfigService) {
     const cognitoConfig =
       this.configService.get<ICognitoConfig>("cognitoConfig");
     if (!cognitoConfig) {
       throw new Error("auth config not initialized");
     }
-    const { region, userPoolId } = cognitoConfig;
+    const { region, userPoolId, clientId } = cognitoConfig;
     this._client = new CognitoIdentityProvider({
       region
     });
     this._userPoolID = userPoolId;
+    this._clientId = clientId;
   }
 
   adminCreateUser = async (params: IAdminService["adminCreateUserParams"]) => {
@@ -227,6 +233,33 @@ export class CognitoAdminService {
       };
       // this request don't send back a payload
       await this._client.adminSetUserPassword(cognitoParams);
+      const data = { done: true };
+      return response(data);
+    } catch (err) {
+      return errorResponse(<AuthClientErrorType>err);
+    }
+  };
+
+  adminUpdateTokensExpireIn = async (
+    params: IAdminService["adminUpdateTokensExpireIn"]
+  ) => {
+    const { refreshTokenValidity, accessTokenValidity } = params;
+    try {
+      const cognitoParams: Parameters<
+        typeof this._client.updateUserPoolClient
+      >["0"] = {
+        UserPoolId: this._userPoolID,
+        ClientId: this._clientId,
+        RefreshTokenValidity: refreshTokenValidity,
+        AccessTokenValidity: accessTokenValidity,
+        IdTokenValidity: accessTokenValidity,
+        TokenValidityUnits: {
+          RefreshToken: TimeUnitsType.MINUTES,
+          AccessToken: TimeUnitsType.MINUTES,
+          IdToken: TimeUnitsType.MINUTES
+        }
+      };
+      await this._client.updateUserPoolClient(cognitoParams);
       const data = { done: true };
       return response(data);
     } catch (err) {
