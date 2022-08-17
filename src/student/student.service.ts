@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ApolloError } from "apollo-server-express";
+import { ApolloError, UserInputError } from "apollo-server-express";
+import { validate } from "class-validator";
 import { CreateStudentInput } from "./dto/create-student.input";
 import { UpdateStudentInput } from "./dto/update-student.input";
 import { StudentRepository } from "./student.repository";
@@ -11,6 +12,12 @@ export class StudentService {
   async create(input: CreateStudentInput) {
     try {
       const student = this.studentRepository.create(input);
+      const errors = await validate(student);
+      // eslint-disable-next-line max-len
+      // errors.map((error)=>(new UserInputError(message: `validation failed on field ${error.property}`,extensions:{})))
+      console.log(errors);
+      // const tt = new UserInputError();
+
       await this.studentRepository.persistAndFlush(student);
       return student;
     } catch (error) {

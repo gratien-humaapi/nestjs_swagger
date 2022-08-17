@@ -188,7 +188,15 @@ type AdminUpdateUserAttributesNormalizedParams =
       | AttributeCognitoNormalizedType[]
       | PartialAttributeCognitoNormalizedType[];
   };
-// ### Update User End ###  Start
+// ### Update User End ###  End
+
+// ### Update (Access, refresh and id) tokens expire time ###  Start
+interface IAdminUpdateTokensParams {
+  refreshTokenValidity: number;
+  accessTokenValidity: number;
+}
+
+// ### Update (Access, refresh and id) tokens expire time ###  End
 export interface IAdminService {
   adminCreateUserParams: AdminCreateUserNormalizedParams;
   adminDeleteUserParams: AdminDeleteUserNormalizedParams;
@@ -200,5 +208,6 @@ export interface IAdminService {
   adminResetUserPasswordParams: AdminResetUserPasswordNormalizedParams;
   adminSetUserPasswordParams: AdminSetUserPasswordNormalizedParams;
   adminUpdateUserAttributesParams: AdminUpdateUserAttributesNormalizedParams;
+  adminUpdateTokensExpireIn: IAdminUpdateTokensParams;
 }
 // ### Update User Attributes ###  End

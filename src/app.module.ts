@@ -27,14 +27,20 @@ import { StudentModule } from "./student/student.module";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        autoSchemaFile: true,
+        autoSchemaFile: "schema.gql",
         playground: false,
+
         plugins:
           configService.get("NODE_ENV") === "production"
-            ? undefined
-            : [ApolloServerPluginLandingPageLocalDefault()],
+            ? []
+            : // ? [responseCachePlugin()]
+              [
+                ApolloServerPluginLandingPageLocalDefault()
+                // [responseCachePlugin()]
+              ],
         bodyParserConfig: false, // BodyParser should run _before_ MikroOrm middleware
-        cors: false // Cors should be handled by NestJS, not the Apollo Server
+        // origin: ["https://www.your-app.example"],
+        csrfPrevention: true
       })
 
       // autoSchemaFile: true

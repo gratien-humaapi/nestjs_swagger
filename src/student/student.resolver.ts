@@ -1,27 +1,44 @@
-import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
-import { Public } from "src/common";
+import { Resolver, Query, Mutation, Args, Int, Info } from "@nestjs/graphql";
+import { GqlValidationPipe, Public } from "src/common";
+import { ValidationPipe } from "@nestjs/common/pipes";
+import { GraphQLResolveInfo } from "graphql/type";
 import { StudentService } from "./student.service";
 import { Student } from "./entities/student.entity";
 import { CreateStudentInput } from "./dto/create-student.input";
 import { UpdateStudentInput } from "./dto/update-student.input";
+import { StudentArgs } from "./dto/student.args";
 
+enum CacheScope {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Public = "PUBLIC",
+  Private = "PRIVATE"
+}
 @Resolver(() => Student)
 @Public()
 export class StudentResolver {
   constructor(private readonly studentsService: StudentService) {}
 
   @Mutation(() => Student)
-  createStudent(@Args("input") input: CreateStudentInput) {
+  createStudent(
+    @Args("input", new GqlValidationPipe()) input: CreateStudentInput
+  ) {
+    // return null;
     return this.studentsService.create(input);
   }
 
   @Query(() => [Student], { name: "students" })
-  findAll() {
+  findAll(@Info() info: GraphQLResolveInfo) {
+    info.cacheControl.setCacheHint({ maxAge: 60, scope: CacheScope.Private });
     return this.studentsService.findAll();
   }
 
   @Query(() => Student, { name: "student" })
-  findOne(@Args("id", { type: () => Int }) id: number) {
+  findOne(@Args(new GqlValidationPipe()) args: StudentArgs) {
+    return this.studentsService.findOne(args.id);
+  }
+
+  @Query(() => Student, { name: "test" })
+  find(@Args("id", { type: () => Int }, new GqlValidationPipe()) id: number) {
     return this.studentsService.findOne(id);
   }
 

@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.79.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.150.0",
     "@mikro-orm/core": "^5.2.4",
     "@mikro-orm/migrations": "^5.2.4",
     "@mikro-orm/nestjs": "^5.1.0",
@@ -50,7 +50,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "verror": "^1.10.1"
   },
   "devDependencies": {
     "@mikro-orm/cli": "^5.2.4",
@@ -64,6 +65,7 @@
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
     "@types/supertest": "^2.0.11",
+    "@types/verror": "^1.10.6",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",

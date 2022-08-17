@@ -3,9 +3,11 @@ import {
   EntityRepositoryType,
   OptionalProps,
   PrimaryKey,
-  Property
+  Property,
+  EntityValidator
 } from "@mikro-orm/core";
 import { ObjectType, Field, Int, ID } from "@nestjs/graphql";
+import { IsEmail, MinLength } from "class-validator";
 import { v4 } from "uuid";
 // eslint-disable-next-line import/no-cycle
 import { StudentRepository } from "../student.repository";
@@ -27,9 +29,11 @@ export class Student {
   updatedAt: Date = new Date();
 
   @Property()
+  @MinLength(3)
   name: string;
 
   @Property()
+  @IsEmail()
   email: string;
 
   @Property()
