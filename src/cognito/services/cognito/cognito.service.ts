@@ -65,7 +65,6 @@ export class CognitoService {
       const resCamelCase = camelCase({
         ...rest
       });
-      console.log(resCamelCase);
       const data = { ...resCamelCase };
       return response(data);
     } catch (err) {

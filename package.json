@@ -42,6 +42,7 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "graphql": "^16.5.0",
+    "graphql-scalars": "^1.18.0",
     "helmet": "^5.1.0",
     "jwks-rsa": "^2.1.0",
     "passport": "^0.6.0",

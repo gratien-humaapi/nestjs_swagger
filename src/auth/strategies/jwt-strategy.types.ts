@@ -1,7 +1,7 @@
-export interface IAccessTokenDecoded {
+export interface IidTokenDecoded {
   sub: string;
   iss: string;
-  client_id: string;
+  aud: string; // the App client ID
   origin_jti: string;
   event_id: string;
   token_use: string;
@@ -10,5 +10,9 @@ export interface IAccessTokenDecoded {
   exp: number;
   iat: number;
   jti: string;
-  username: string;
+  email: string;
+  // username: string;
+  email_verified: boolean;
+  "cognito:username": string;
+  "custom:tenantId": string;
 }
