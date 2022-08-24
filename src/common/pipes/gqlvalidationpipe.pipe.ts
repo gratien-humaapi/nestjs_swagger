@@ -23,15 +23,12 @@ class MyError extends ApolloError {
 @Injectable()
 export class GqlValidationPipe<T> implements PipeTransform<T> {
   async transform(value: T, { metatype, data, type }: ArgumentMetadata) {
-    console.warn({ value, metatype, data, type });
-
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
 
     const object = plainToInstance(metatype, value);
     const errors = await validate(object);
-    console.log(errors);
 
     if (errors.length) {
       const graphqlError = errors.map(({ property, constraints }) => ({

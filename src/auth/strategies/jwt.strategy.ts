@@ -3,8 +3,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
 import { CognitoService } from "src/cognito";
 import { passportJwtSecret } from "jwks-rsa";
-import { jwtConstants } from "../constants";
-import { IAccessTokenDecoded } from "./jwt-strategy.types";
+import { IidTokenDecoded } from "./jwt-strategy.types";
+import { ICurrentUser } from "./type";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -24,15 +24,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       issuer: _cognitoService.authority,
-      algorithms: ["RS256"]
+      audience: _cognitoService.clientId,
+      algorithms: ["RS256"],
+      passReqToCallback: false
     });
   }
 
-  async validate(payload: IAccessTokenDecoded) {
+  async validate(payload: IidTokenDecoded) {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { client_id } = payload;
-    if (client_id === this._cognitoService.clientId) {
-      return { userId: payload.sub, username: payload.username };
+    const { aud } = payload;
+    if (aud === this._cognitoService.clientId) {
+      const currentUser: ICurrentUser = {
+        userId: payload.sub,
+        tenantId: payload["custom:tenantId"]
+      };
+
+      return currentUser;
     }
 
     return false;

@@ -11,16 +11,33 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
   constructor(private reflector: Reflector) {
     super();
   }
-
-  canActivate(context: ExecutionContext) {
+  canActivate(ctx: ExecutionContext) {
+    const graphqlCtx = GqlExecutionContext.create(ctx);
+    const contextType = ctx.getType<CustomContextType>();
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass()
+      ctx.getHandler(),
+      ctx.getClass()
     ]);
     if (isPublic) {
       return true;
     }
+    if (contextType === "http") {
+      return super.canActivate(ctx);
+    }
 
-    return super.canActivate(context);
+    const { req } = graphqlCtx.getContext();
+    return super.canActivate(new ExecutionContextHost([req])); // NOTE
   }
+
+  // canActivate(context: ExecutionContext) {
+  //   const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+  //     context.getHandler(),
+  //     context.getClass()
+  //   ]);
+  //   if (isPublic) {
+  //     return true;
+  //   }
+
+  //   return super.canActivate(context);
+  // }
 }
