@@ -17,6 +17,7 @@ export class RefreshTokenInterceptor implements NestInterceptor {
     next: CallHandler<SignInResponse>
   ): Observable<SignInResponse> {
     const res: Response = context.switchToHttp().getResponse();
+
     return next.handle().pipe(
       tap((data) => {
         const { authenticationResult } = data;
