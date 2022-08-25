@@ -7,6 +7,8 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // https://mikro-orm.io/docs/usage-with-nestjs#app-shutdown-and-cleanup
+  app.enableShutdownHooks();
   const configService = app.get(ConfigService);
   /**
    * @see https://mikro-orm.io/docs/usage-with-nestjs#request-scoping-when-using-graphql

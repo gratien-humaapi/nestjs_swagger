@@ -19,7 +19,7 @@ const MikroOrmConfig: Options = {
   metadataProvider: TsMorphMetadataProvider,
   debug: configService.get("NODE_ENV") !== "production",
   loadStrategy: LoadStrategy.JOINED,
-  // highlighter: new SqlHighlighter(),
+  highlighter: new SqlHighlighter(),
   migrations: {
     path: "dist/migrations",
     pathTs: "src/migrations"
