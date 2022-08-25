@@ -48,4 +48,13 @@ export class AdminService {
 
     return res.data;
   };
+
+  adminCreateUser = async (params: IAdminService["adminCreateUserParams"]) => {
+    const res = await this._cognitoAdminService.adminCreateUser(params);
+    if (!isResolved(res)) {
+      const { error } = res;
+      throw new AuthClientError(error);
+    }
+    return res.data;
+  };
 }

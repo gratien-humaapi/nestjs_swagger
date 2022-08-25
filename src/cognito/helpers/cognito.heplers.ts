@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
@@ -50,28 +51,39 @@ export const attributesToCognitoFormat = (
     | AttributeCognitoNormalizedType[]
     | PartialAttributeCognitoNormalizedType[]
 ) => {
-  //   const normalizedAttributes = attributes.find
-  const emailAttributeValue = attributes.find(
-    (value) => value.name === "email"
-  )!;
   let values: { Name: string; Value: string }[] = [];
-  if (emailAttributeValue.value) {
-    const attribute = {
-      Name: emailAttributeValue.name,
-      Value: emailAttributeValue.value
-    };
-    values = [attribute, ...values];
+
+  function getAttribute(attr: string) {
+    const attributeValue = attributes.find((value) => value.name === attr)!;
+    if (!attributeValue) return [];
+    let values: { Name: string; Value: string }[] = [];
+    if (attributeValue.value) {
+      const attribute = {
+        Name: attributeValue.name,
+        Value: attributeValue.value
+      };
+      values = [attribute, ...values];
+      if (attr.includes("custom:")) return values;
+    }
+    if (
+      attributeValue.isVerified != null ||
+      attributeValue.isVerified !== undefined
+    ) {
+      const attribute = {
+        Name: `${attr}_verified`,
+        Value: attributeValue.isVerified ? "True" : "False"
+      };
+      values = [attribute, ...values];
+      return values;
+    }
+    return [];
   }
-  if (
-    emailAttributeValue.isVerified != null ||
-    emailAttributeValue.isVerified !== undefined
-  ) {
-    const attribute = {
-      Name: "email_verified",
-      Value: emailAttributeValue.isVerified ? "True" : "False"
-    };
-    values = [attribute, ...values];
-  }
+
+  values = [
+    ...getAttribute("email"),
+    ...getAttribute("phone"),
+    ...getAttribute("custom:tenantId")
+  ];
 
   if (!values.length) {
     throw new Error("attributes should have either name set or isVerified set");

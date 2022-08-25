@@ -17,7 +17,7 @@ export enum UserStatusEnum {
 
 type CognitoClientType = InstanceType<typeof CognitoIdentityProvider>;
 
-type AdminUpdateUserUserAttributeInput = {
+export type AdminUpdateUserUserAttributeInput = {
   name: string;
   value?: string | null;
   isVerified?: boolean | null;
@@ -32,8 +32,8 @@ export type AttributesCognitoType = NonNullable<
 >[0];
 
 export type AttributeCognitoNormalizedType = NoUndefinedField<
-  DeepNonNullable<AdminUpdateUserUserAttributeInput>
->;
+  DeepNonNullable<Omit<AdminUpdateUserUserAttributeInput, "isVerified">>
+> & { isVerified?: boolean };
 
 export type PartialAttributeCognitoNormalizedType =
   AdminUpdateUserUserAttributeInput;
@@ -53,9 +53,10 @@ const adminCreateUserParamsCamelCase = (
   params: DeepNonNullable<AdminCreateUserParams>
 ) => camelCase(params);
 
-type AdminCreateUserParamsCamelCase = ReturnType<
-  typeof adminCreateUserParamsCamelCase
->;
+type AdminCreateUserParamsCamelCase = Omit<
+  ReturnType<typeof adminCreateUserParamsCamelCase>,
+  "messageAction"
+> & { sendPassword: boolean };
 
 type AdminCreateUserNormalizedParams = AdminCreateUserParamsCamelCase & {
   attributes: AttributeCognitoNormalizedType[];

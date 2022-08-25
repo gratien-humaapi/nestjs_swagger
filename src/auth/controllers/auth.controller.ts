@@ -3,22 +3,18 @@ import {
   Controller,
   Headers,
   Post,
-  Req,
   UseGuards,
   UseInterceptors
 } from "@nestjs/common";
-import camelcaseKeys from "camelcase-keys";
 import { ICognitoService } from "src/cognito";
-import { Request } from "express";
-import { Cookie, JwtAuthGuard, Public } from "src/common";
+import { JwtAuthGuard, Public } from "src/common";
 import {
   RefreshTokenInterceptor,
   RefreshTokenRevokeInterceptor
 } from "../interceptors";
-import { LocalAuthGuard } from "../local-auth.guard";
 import { AuthService } from "../services";
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller("auth")
 export class AuthController {
   constructor(private _authService: AuthService) {}

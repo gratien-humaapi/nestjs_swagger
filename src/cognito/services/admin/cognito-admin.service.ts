@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import {
   CognitoIdentityProvider,
+  ExplicitAuthFlowsType,
   TimeUnitsType
 } from "@aws-sdk/client-cognito-identity-provider";
 import { errorResponse, response } from "src/common/utils";
@@ -44,10 +45,10 @@ export class CognitoAdminService {
       UserPoolId: this._userPoolID,
       Username: params.username, // if email set UserAttributes
       UserAttributes: attributesToCognitoFormat(params.attributes),
-      MessageAction: params.messageAction,
+      MessageAction: params.sendPassword ? undefined : "SUPPRESS",
       TemporaryPassword: params.temporaryPassword
     };
-    console.log("marche");
+    console.log(cognitoParams);
     try {
       const { $metadata, ...rest } = await this._client.adminCreateUser(
         cognitoParams
@@ -74,7 +75,6 @@ export class CognitoAdminService {
         ...Other
       });
       const data = { ...(other as DeepNonNullable<typeof other>) };
-      console.log("marche");
 
       return response(data);
     } catch (err) {
@@ -253,6 +253,12 @@ export class CognitoAdminService {
         RefreshTokenValidity: refreshTokenValidity,
         AccessTokenValidity: accessTokenValidity,
         IdTokenValidity: accessTokenValidity,
+        ExplicitAuthFlows: [
+          ExplicitAuthFlowsType.ALLOW_ADMIN_USER_PASSWORD_AUTH,
+          ExplicitAuthFlowsType.ALLOW_CUSTOM_AUTH,
+          ExplicitAuthFlowsType.ALLOW_USER_SRP_AUTH,
+          ExplicitAuthFlowsType.ALLOW_REFRESH_TOKEN_AUTH
+        ],
         TokenValidityUnits: {
           RefreshToken: TimeUnitsType.MINUTES,
           AccessToken: TimeUnitsType.MINUTES,
