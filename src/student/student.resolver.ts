@@ -1,7 +1,9 @@
 import { Resolver, Query, Mutation, Args, Int, Info } from "@nestjs/graphql";
-import { GqlValidationPipe, Public } from "src/common";
+import { GqlValidationPipe, CurrentUser, Public } from "src/common";
 import { ValidationPipe } from "@nestjs/common/pipes";
 import { GraphQLResolveInfo } from "graphql/type";
+import { ICurrentUser } from "src/auth";
+import { UseGuards } from "@nestjs/common";
 import { StudentService } from "./student.service";
 import { Student } from "./entities/student.entity";
 import { CreateStudentInput } from "./dto/create-student.input";
@@ -13,16 +15,21 @@ enum CacheScope {
   Public = "PUBLIC",
   Private = "PRIVATE"
 }
+
+// @UseGuards(GraphqlJwtAuthGuard)
 @Resolver(() => Student)
-@Public()
 export class StudentResolver {
   constructor(private readonly studentsService: StudentService) {}
 
   @Mutation(() => Student)
   createStudent(
-    @Args("input", new GqlValidationPipe()) input: CreateStudentInput
+    @CurrentUser() user: ICurrentUser,
+    @Args("input", new GqlValidationPipe())
+    input: CreateStudentInput
   ) {
     // return null;
+    // console.log({ user });
+
     return this.studentsService.create(input);
   }
 

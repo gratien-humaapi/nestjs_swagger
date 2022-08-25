@@ -12,10 +12,6 @@ export class StudentService {
   async create(input: CreateStudentInput) {
     try {
       const student = this.studentRepository.create(input);
-      const errors = await validate(student);
-      // eslint-disable-next-line max-len
-      // errors.map((error)=>(new UserInputError(message: `validation failed on field ${error.property}`,extensions:{})))
-      console.log(errors);
       // const tt = new UserInputError();
 
       await this.studentRepository.persistAndFlush(student);
