@@ -1,19 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import {
-  Entity,
-  EntityRepositoryType,
-  OptionalProps,
-  PrimaryKey,
-  Property,
-  ManyToOne,
-  Constructor,
-  Filter
-} from "@mikro-orm/core";
-import { Type } from "@nestjs/common";
-import { ObjectType, Field, ID, Int } from "@nestjs/graphql";
-import { IsUppercase, Length, MaxLength } from "class-validator";
+import { Entity, OptionalProps, PrimaryKey, Property } from "@mikro-orm/core";
+import { ObjectType, Field } from "@nestjs/graphql";
+import { GraphQLUUID } from "graphql-scalars";
 import { v4 } from "uuid";
 // eslint-disable-next-line import/no-cycle
 
@@ -27,21 +17,13 @@ export interface IBaseEntity {
 
 @ObjectType({ isAbstract: true })
 @Entity({ abstract: true })
-@Filter({
-  name: "currentUser",
-  cond: ({ tenant, owner }) => ({
-    tenant: { $eq: tenant },
-    owner: { $eq: owner }
-  }),
-  default: true
-})
 export abstract class CustomBaseEntity<T extends string = "">
   implements IBaseEntity
 {
   [OptionalProps]?: T | "createdAt" | "updatedAt" | "modifiedBy";
-  @Field(() => ID)
-  @PrimaryKey({ type: "uuid" })
-  id: string = v4();
+  @Field(() => GraphQLUUID)
+  @PrimaryKey({ type: "uuid", onCreate: () => v4() })
+  id: string;
 
   @Property()
   createdAt: Date = new Date();

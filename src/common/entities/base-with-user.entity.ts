@@ -3,17 +3,13 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import {
   Entity,
-  EntityRepositoryType,
   OptionalProps,
   PrimaryKey,
   Property,
-  ManyToOne,
-  Constructor,
   Filter
 } from "@mikro-orm/core";
-import { Type } from "@nestjs/common";
-import { ObjectType, Field, ID, Int } from "@nestjs/graphql";
-import { IsUppercase, Length, MaxLength } from "class-validator";
+import { ObjectType, Field } from "@nestjs/graphql";
+import { GraphQLUUID } from "graphql-scalars";
 import { v4 } from "uuid";
 import { IBaseEntity } from "./base.entity";
 // eslint-disable-next-line import/no-cycle
@@ -32,8 +28,8 @@ import { IBaseEntity } from "./base.entity";
 })
 export abstract class BaseEntityWithUser implements IBaseEntity {
   [OptionalProps]?: "createdAt" | "updatedAt" | "modifiedBy";
-  @Field(() => ID)
-  @PrimaryKey({ onCreate: () => v4() })
+  @Field(() => GraphQLUUID)
+  @PrimaryKey({ type: "uuid", onCreate: () => v4() })
   id: string;
 
   @Property()
