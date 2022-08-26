@@ -5,3 +5,5 @@ export * from "./decorators";
 export * from "./guards";
 export * from "./pipes";
 export * from "./entities";
+export * from "./enums";
+export * from "./interceptors";

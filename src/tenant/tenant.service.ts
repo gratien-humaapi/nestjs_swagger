@@ -9,74 +9,55 @@ import { UpdateTenantInput } from "./dto/update-tenant.input";
 export class TenantService {
   constructor(private readonly tenantRepository: TenantRepository) {}
 
+  /**
+   * Create tenant
+   */
   async create(input: CreateTenantInput) {
-    try {
-      const tenant = this.tenantRepository.create({
-        ...input
-      });
+    const tenant = this.tenantRepository.create({
+      ...input
+    });
 
-      // eslint-disable-next-line max-len
-      await this.tenantRepository.persistAndFlush(tenant);
-      console.log(tenant);
-      return tenant;
-    } catch (error) {
-      console.log({ ...error, message: error.message });
-      throw new ApolloError("operation failed");
-    }
+    // eslint-disable-next-line max-len
+    await this.tenantRepository.persistAndFlush(tenant);
+    return tenant;
   }
 
-  async findAll(currentUser: WithCurrentUser) {
-    try {
-      const currencies = await this.tenantRepository.find(
-        {}
-        // {
-        //   filters: { currentUser }
-        // }
-      );
-      // eslint-disable-next-line max-len
+  /**
+   * Update Tenant by ID
+   */
+  async update(input: UpdateTenantInput) {
+    const { id, ...rest } = input;
 
-      return currencies;
-    } catch (error) {
-      console.log({ ...error, message: error.message });
-      throw new ApolloError("operation failed");
-    }
+    const tenant = await this.tenantRepository.findOneOrFail({ id });
+
+    this.tenantRepository.assign(tenant, rest);
+    await this.tenantRepository.flush();
+    return tenant;
+  }
+
+  /**
+   * Remove Tenant by ID
+   */
+  async remove(id: string) {
+    const tenant = await this.tenantRepository.findOneOrFail({ id });
+    await this.tenantRepository.removeAndFlush(tenant);
+
+    return tenant;
+  }
+
+  /**
+   * List all Tenant
+   */
+  async findAll() {
+    const currencies = await this.tenantRepository.findAll();
+    return currencies;
   }
 
   /**
    * Get Tenant by ID
    */
   async findOne(id: string) {
-    try {
-      const tenant = await this.tenantRepository.findOne({ id });
-      return tenant;
-    } catch (error) {
-      console.log({ ...error, message: error.message });
-      throw new ApolloError("operation failed");
-    }
-  }
-
-  async update(input: UpdateTenantInput) {
-    const { id, ...rest } = input;
-    try {
-      const tenant = await this.tenantRepository.findOneOrFail({ id });
-      this.tenantRepository.assign(tenant, rest);
-      await this.tenantRepository.flush();
-      return tenant;
-    } catch (error) {
-      console.log({ ...error, message: error.message });
-      throw new ApolloError("operation failed");
-    }
-  }
-
-  async remove(id: string) {
-    try {
-      const tenant = await this.tenantRepository.findOneOrFail({ id });
-      await this.tenantRepository.removeAndFlush(tenant);
-
-      return tenant;
-    } catch (error) {
-      console.log({ ...error, message: error.message });
-      throw new ApolloError("operation failed");
-    }
+    const tenant = await this.tenantRepository.findOneOrFail({ id });
+    return tenant;
   }
 }

@@ -1,10 +1,10 @@
 import { registerEnumType } from "@nestjs/graphql";
 
 export enum CommonStatusEnum {
-  ACTIVE = "active",
-  PENDING = "banned",
-  ARCHIVED = "archived",
-  BANNED = "banned"
+  active = "active",
+  pending = "pending",
+  archived = "archived",
+  banned = "banned"
 }
 
 // required for graphql
