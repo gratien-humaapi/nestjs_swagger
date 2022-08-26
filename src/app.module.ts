@@ -1,23 +1,24 @@
 /* eslint-disable import/order */
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
-import { UsersModule } from "./users/users.module";
 import { PassportModule } from "@nestjs/passport";
 import { AppController } from "./app.controller";
 import { AuthModule } from "./auth/auth.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AdminModule } from "./admin";
-import { APP_GUARD } from "@nestjs/core";
-import { JwtAuthGuard } from "./common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
 import { MikroOrmMiddleware, MikroOrmModule } from "@mikro-orm/nestjs";
 import { MikroORM } from "@mikro-orm/core";
 import { StudentModule } from "./student/student.module";
+import { CurrencyModule } from "./currency/currency.module";
+import { GraphQLUUID } from "graphql-scalars";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
+import { ErrorsInterceptor, JwtAuthGuard } from "./common";
+import { TenantModule } from "./tenant/tenant.module";
 
 @Module({
   imports: [
-    UsersModule,
     PassportModule,
     AuthModule,
     ConfigModule.forRoot(),
@@ -29,7 +30,7 @@ import { StudentModule } from "./student/student.module";
       useFactory: (configService: ConfigService) => ({
         autoSchemaFile: "schema.gql",
         playground: false,
-
+        resolvers: { UUID: GraphQLUUID },
         plugins:
           configService.get("NODE_ENV") === "production"
             ? []
@@ -47,7 +48,9 @@ import { StudentModule } from "./student/student.module";
     }),
     // AuthorsModule,
     MikroOrmModule.forRoot(),
-    StudentModule
+    StudentModule,
+    CurrencyModule,
+    TenantModule
     // DatabaseModule
     // PostsModule
   ],
@@ -55,6 +58,10 @@ import { StudentModule } from "./student/student.module";
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorsInterceptor
     }
   ],
   controllers: [AppController]
