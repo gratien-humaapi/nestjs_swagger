@@ -4,7 +4,8 @@ import { ExecutionContextHost } from "@nestjs/core/helpers/execution-context-hos
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
 import { AuthenticationError } from "apollo-server-errors";
-import { CustomContextType, IS_PUBLIC_KEY } from "src/common";
+import { CustomContextType } from "../types";
+import { IS_PUBLIC_KEY } from "../decorators";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard("jwt") {

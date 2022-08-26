@@ -9,7 +9,7 @@ import {
 } from "@mikro-orm/core";
 import { ObjectType, Field, ID } from "@nestjs/graphql";
 import { IsUppercase, Length, MaxLength } from "class-validator";
-import { BaseEntityWithUser } from "src/common";
+import { BaseEntityWithUser } from "../../common";
 // eslint-disable-next-line import/no-cycle
 import { CurrencyRepository } from "../currency.repository";
 
