@@ -1,6 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { ApolloError } from "apollo-server-express";
-import { WithCurrentUser } from "src/common";
 import { TenantRepository } from "./tenant.repository";
 import { CreateTenantInput } from "./dto/create-tenant.input";
 import { UpdateTenantInput } from "./dto/update-tenant.input";

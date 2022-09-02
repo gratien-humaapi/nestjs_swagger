@@ -23,7 +23,7 @@ export class Tenant extends CustomBaseEntity<CustomOptionalProps> {
     onCreate: (e: Tenant) => e.status === "active",
     onUpdate: (e: Tenant) => e.status === "active"
   })
-  readonly isActive: boolean;
+  isActive: boolean;
 
   @Enum()
   status: CommonStatusEnum;
