@@ -1,24 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/ban-types */
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  Injectable,
-  PipeTransform
-} from "@nestjs/common";
-import { ApolloError, UserInputError } from "apollo-server-express";
+import { ArgumentMetadata, Injectable, PipeTransform } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
-import { GraphQLError, GraphQLFormattedError } from "graphql";
-import { MultiError } from "verror";
-
-class MyError extends ApolloError {
-  constructor(message: string, extensions?: Record<string, any>) {
-    super(message, "BAD_USER_INPUT", extensions);
-
-    Object.defineProperty(this, "name", { value: "UserInputError" });
-  }
-}
+import { GraphQLError } from "graphql";
 
 @Injectable()
 export class GqlValidationPipe<T> implements PipeTransform<T> {
@@ -35,7 +21,7 @@ export class GqlValidationPipe<T> implements PipeTransform<T> {
         property,
         constraints: Object.values(constraints as Record<string, any>)
       }));
-      throw new GraphQLError("", {
+      throw new GraphQLError("Bad user input", {
         extensions: {
           code: "CUSTOM_BAD_USER_INPUT",
           validationErrors: graphqlError
