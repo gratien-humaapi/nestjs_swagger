@@ -1,24 +1,19 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import {
-  Entity,
-  EntityRepositoryType,
-  OptionalProps,
-  PrimaryKey,
-  Property,
-  ManyToOne
-} from "@mikro-orm/core";
+import { Entity, Property } from "@mikro-orm/core";
 import { ObjectType, Field, ID } from "@nestjs/graphql";
 import { IsUppercase, Length, MaxLength } from "class-validator";
-import { BaseEntityWithUser } from "../../common";
-// eslint-disable-next-line import/no-cycle
+import { CustomBaseEntity } from "../../common";
 import { CurrencyRepository } from "../currency.repository";
 
+type CustomOptionalProps = "isActive" | "description";
 // https://taxsummaries.pwc.com/glossary/currency-codes
 @ObjectType()
 @Entity({ customRepository: () => CurrencyRepository })
-export class Currency extends BaseEntityWithUser {
-  [EntityRepositoryType]?: CurrencyRepository;
-
+export class Currency extends CustomBaseEntity<
+  CurrencyRepository,
+  CustomOptionalProps
+> {
   @Property()
   isActive: boolean = true;
 
