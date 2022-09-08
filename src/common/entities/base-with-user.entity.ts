@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
@@ -6,13 +7,15 @@ import {
   OptionalProps,
   PrimaryKey,
   Property,
-  Filter
+  Filter,
+  ManyToOne,
+  EntityRepositoryType
 } from "@mikro-orm/core";
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, HideField } from "@nestjs/graphql";
+import { IsUUID } from "class-validator";
 import { GraphQLUUID } from "graphql-scalars";
 import { v4 } from "uuid";
 import { IBaseEntity } from "./base.entity";
-// eslint-disable-next-line import/no-cycle
 
 // https://taxsummaries.pwc.com/glossary/currency-codes
 
@@ -20,14 +23,19 @@ import { IBaseEntity } from "./base.entity";
 @Entity({ abstract: true })
 @Filter({
   name: "currentUser",
-  cond: ({ tenant, owner }) => ({
-    tenant: { $eq: tenant },
+  cond: ({ company, owner }) => ({
+    company: { $eq: company },
     owner: { $eq: owner }
   }),
   default: true
 })
-export abstract class BaseEntityWithUser implements IBaseEntity {
-  [OptionalProps]?: "createdAt" | "updatedAt" | "modifiedBy";
+export abstract class BaseEntityWithTenantUser<
+  Repository = "",
+  T extends string = ""
+> implements IBaseEntity
+{
+  [EntityRepositoryType]?: Repository;
+  [OptionalProps]?: T | "createdAt" | "updatedAt" | "modifiedBy";
   @Field(() => GraphQLUUID)
   @PrimaryKey({ type: "uuid", onCreate: () => v4() })
   id: string;
@@ -38,12 +46,17 @@ export abstract class BaseEntityWithUser implements IBaseEntity {
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
 
-  // @Property({ onCreate: (entity: BaseEntityWithUser) => entity.owner })
-  // modifiedBy: string;
+  @Property({ onCreate: (entity: BaseEntityWithTenantUser) => entity.owner })
+  @IsUUID()
+  modifiedBy: string;
 
-  // @ManyToOne(() => User, { mapToPk: true })
-  // owner: string;
+  @Property()
+  @HideField()
+  @IsUUID()
+  owner: string;
 
-  // @ManyToOne(() => User, { mapToPk: true })
-  // tenant: string;
+  @Property()
+  @HideField()
+  @IsUUID()
+  company: string;
 }
