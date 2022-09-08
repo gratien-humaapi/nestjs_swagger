@@ -16,12 +16,13 @@ type CustomOptionalProps = "isActive" | "description";
 
 @ObjectType()
 @Entity({ customRepository: () => TenantRepository })
-export class Tenant extends CustomBaseEntity<CustomOptionalProps> {
-  [EntityRepositoryType]?: TenantRepository;
-
+export class Tenant extends CustomBaseEntity<
+  TenantRepository,
+  CustomOptionalProps
+> {
   @Property({
-    onCreate: (e: Tenant) => e.status === "active",
-    onUpdate: (e: Tenant) => e.status === "active"
+    onCreate: (e: Tenant) => e.status === "ACTIVE",
+    onUpdate: (e: Tenant) => e.status === "ACTIVE"
   })
   isActive: boolean;
 
