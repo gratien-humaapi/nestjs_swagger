@@ -7,3 +7,4 @@ export * from "./pipes";
 export * from "./entities";
 export * from "./enums";
 export * from "./interceptors";
+export * from "./constants";
