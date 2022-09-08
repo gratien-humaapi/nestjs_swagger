@@ -1,40 +1,46 @@
 import { Injectable } from "@nestjs/common";
-import { ApolloError, UserInputError } from "apollo-server-express";
-import { validate } from "class-validator";
+import { StudentRepository } from "./student.repository";
 import { CreateStudentInput } from "./dto/create-student.input";
 import { UpdateStudentInput } from "./dto/update-student.input";
-import { StudentRepository } from "./student.repository";
 
 @Injectable()
 export class StudentService {
   constructor(private readonly studentRepository: StudentRepository) {}
 
   async create(input: CreateStudentInput) {
-    try {
-      const student = this.studentRepository.create(input);
-      // const tt = new UserInputError();
+    const student = this.studentRepository.create({
+      ...input
+    });
 
-      await this.studentRepository.persistAndFlush(student);
-      return student;
-    } catch (error) {
-      console.log({ ...error, message: error.message });
-      throw new ApolloError("internal server error");
-    }
+    // eslint-disable-next-line max-len
+    await this.studentRepository.persistAndFlush(student);
+    return student;
   }
 
-  findAll() {
-    return `This action returns all students`;
+  async update(input: UpdateStudentInput) {
+    const { id, ...rest } = input;
+
+    const student = await this.studentRepository.findOneOrFail({ id });
+
+    this.studentRepository.assign(student, rest);
+    await this.studentRepository.flush();
+    return student;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  async remove(id: string) {
+    const student = await this.studentRepository.findOneOrFail({ id });
+    await this.studentRepository.removeAndFlush(student);
+
+    return student;
   }
 
-  update(id: number, updateStudentInput: UpdateStudentInput) {
-    return `This action updates a #${id} student`;
+  async findAll() {
+    const students = await this.studentRepository.findAll();
+    return students;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  async findOne(id: string) {
+    const student = await this.studentRepository.findOneOrFail({ id });
+    return student;
   }
 }

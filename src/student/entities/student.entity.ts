@@ -1,33 +1,19 @@
-import {
-  Entity,
-  EntityRepositoryType,
-  OptionalProps,
-  PrimaryKey,
-  Property,
-  EntityValidator
-} from "@mikro-orm/core";
-import { ObjectType, Field, Int, ID } from "@nestjs/graphql";
+import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { ObjectType, Field, ID } from "@nestjs/graphql";
 import { IsEmail, MinLength } from "class-validator";
 import { v4 } from "uuid";
+import { CustomBaseEntity } from "../../common";
 // eslint-disable-next-line import/no-cycle
 import { StudentRepository } from "../student.repository";
 
+type CustomOptionalProps = "isActive" | "description";
+
 @ObjectType()
 @Entity({ customRepository: () => StudentRepository })
-export class Student {
-  [EntityRepositoryType]?: StudentRepository;
-  [OptionalProps]?: "createdAt" | "updatedAt";
-
-  @Field(() => ID)
-  @PrimaryKey()
-  id: string = v4();
-
-  @Property()
-  createdAt: Date = new Date();
-
-  @Property({ onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
-
+export class Student extends CustomBaseEntity<
+  StudentRepository,
+  CustomOptionalProps
+> {
   @Property()
   @MinLength(3)
   name: string;
