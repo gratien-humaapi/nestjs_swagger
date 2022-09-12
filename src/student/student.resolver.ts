@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, Int, Info } from "@nestjs/graphql";
 import { GqlValidationPipe, CurrentUser, Public } from "src/common";
 import { ValidationPipe } from "@nestjs/common/pipes";
 import { GraphQLResolveInfo } from "graphql/type";
-import { ICurrentUser } from "src/auth";
+import { ICurrentUser } from "src/authentification";
 import { UseGuards } from "@nestjs/common";
 import { GraphQLUUID } from "graphql-scalars";
 import { StudentService } from "./student.service";

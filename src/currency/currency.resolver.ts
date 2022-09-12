@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { CurrentUser, GqlValidationPipe } from "src/common";
-import { ICurrentUser } from "src/auth";
+import { ICurrentUser } from "src/authentification";
 import { CurrencyService } from "./currency.service";
 import { Currency } from "./entities/currency.entity";
 import { CreateCurrencyInput } from "./dto/create-currency.input";

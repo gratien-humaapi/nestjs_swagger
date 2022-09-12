@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { SessionService } from "src/authentification";
 import { StudentRepository } from "./student.repository";
 import { CreateStudentInput } from "./dto/create-student.input";
 import { UpdateStudentInput } from "./dto/update-student.input";
@@ -19,6 +20,8 @@ export class StudentService {
 
   async update(input: UpdateStudentInput) {
     const { id, ...rest } = input;
+
+    // this.sessionService.testReq();
 
     const student = await this.studentRepository.findOneOrFail({ id });
 

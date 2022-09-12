@@ -2,7 +2,7 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
 import { AppController } from "./app.controller";
-import { AuthModule } from "./auth/auth.module";
+import { AuthModule } from "./authentification/auth.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AdminModule } from "./admin";
 import { GraphQLModule } from "@nestjs/graphql";
@@ -16,6 +16,9 @@ import { GraphQLUUID } from "graphql-scalars";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { ErrorsInterceptor, JwtAuthGuard } from "./common";
 import { TenantModule } from "./tenant/tenant.module";
+import { CompanyModule } from "./company/company.module";
+import { UserModule } from "./user/user.module";
+import { CurrentUserSuscriber } from "./current-user-suscriber";
 
 @Module({
   imports: [
@@ -50,7 +53,9 @@ import { TenantModule } from "./tenant/tenant.module";
     MikroOrmModule.forRoot(),
     StudentModule,
     CurrencyModule,
-    TenantModule
+    TenantModule,
+    CompanyModule,
+    UserModule
     // DatabaseModule
     // PostsModule
   ],
@@ -62,7 +67,8 @@ import { TenantModule } from "./tenant/tenant.module";
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsInterceptor
-    }
+    },
+    CurrentUserSuscriber
   ],
   controllers: [AppController]
 })

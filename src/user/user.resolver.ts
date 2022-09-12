@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { CurrentUser, GqlValidationPipe } from "src/common";
-import { ICurrentUser } from "src/auth";
+import { ICurrentUser } from "src/authentification";
 import { GraphQLUUID } from "graphql-scalars";
 import { UserService } from "./user.service";
 import { User } from "./entities/user.entity";
