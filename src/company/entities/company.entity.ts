@@ -3,7 +3,6 @@
 import { Entity, Property, Enum, ManyToOne } from "@mikro-orm/core";
 import { ObjectType } from "@nestjs/graphql";
 import { MaxLength } from "class-validator";
-import { User } from "../../user/entities/user.entity";
 import { Currency } from "../../currency/entities/currency.entity";
 import { BaseEntityWithTenantUser, CommonStatusEnum } from "../../common";
 import { CompanyRepository } from "../company.repository";
@@ -35,7 +34,7 @@ export class Company extends BaseEntityWithTenantUser<
   isGroup: boolean;
 
   @ManyToOne(() => Company, { mapToPk: true })
-  headoffice: string;
+  headOffice: string;
 
   @Property()
   @MaxLength(30)
