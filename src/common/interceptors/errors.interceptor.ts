@@ -20,17 +20,24 @@ export class ErrorsInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       catchError((error) => {
-        console.error({ message: error.message, ...error });
-        if (error instanceof NotFoundError) {
-          throw new GraphQLError(error.message, {
-            extensions: {
-              code: "CUSTOM_NOT_FOUND"
-            }
-          });
-        } else {
-          console.error({ ...error });
+        console.error({
+          message: error.message,
+          extensions: error.extensions,
+          ...error
+        });
+        switch (error.constructor) {
+          case NotFoundError:
+            throw new GraphQLError(error.message, {
+              extensions: {
+                code: "CUSTOM_NOT_FOUND"
+              }
+            });
 
-          throw new GraphQLError("operation failed", {});
+          case GraphQLError:
+            return next.handle();
+
+          default:
+            throw new GraphQLError("operation failed", {});
         }
       })
     );
