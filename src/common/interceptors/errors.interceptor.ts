@@ -20,6 +20,7 @@ export class ErrorsInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       catchError((error) => {
+        console.error({ message: error.message, ...error });
         if (error instanceof NotFoundError) {
           throw new GraphQLError(error.message, {
             extensions: {
@@ -27,6 +28,8 @@ export class ErrorsInterceptor implements NestInterceptor {
             }
           });
         } else {
+          console.error({ ...error });
+
           throw new GraphQLError("operation failed", {});
         }
       })

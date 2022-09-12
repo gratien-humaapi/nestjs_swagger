@@ -22,7 +22,8 @@ const MikroOrmConfig: Options = {
   highlighter: new SqlHighlighter(),
   migrations: {
     path: "dist/migrations",
-    pathTs: "src/migrations"
+    pathTs: "src/migrations",
+    snapshot: false // change to "true" after dev iteration
   }
 };
 
