@@ -4,6 +4,17 @@ import { Company } from "../entities/company.entity";
 @InputType()
 export class UpdateCompanyInput extends OmitType(
   Company,
-  ["createdAt", "updatedAt", "isActive"] as const,
+  [
+    "createdAt",
+    "updatedAt",
+    "isActive",
+    "currency"
+
+    // "modifiedBy",
+    // "tenantId",
+    // "companyId",
+    // "ownerId"
+    // "tenant"
+  ] as const,
   InputType
 ) {}

@@ -1,19 +1,36 @@
 import { Injectable } from "@nestjs/common";
+import { CommonStatusEnum } from "src/common";
+import { CurrencyRepository } from "src/currency/currency.repository";
 import { CompanyRepository } from "./company.repository";
 import { CreateCompanyInput } from "./dto/create-company.input";
 import { UpdateCompanyInput } from "./dto/update-company.input";
 
 @Injectable()
 export class CompanyService {
-  constructor(private readonly companyRepository: CompanyRepository) {}
+  constructor(
+    private readonly companyRepository: CompanyRepository,
+    private readonly currencyRepository: CurrencyRepository
+  ) {}
 
   async create(input: CreateCompanyInput) {
+    const currency = await this.currencyRepository.findOneOrFail({
+      id: input.currencyId
+    });
+
     const company = this.companyRepository.create({
+      // tenant: {
+      //   status: input.status,
+      //   name: input.name,
+      //   description: input.description
+      // },
+      currency,
       ...input
     });
 
-    // eslint-disable-next-line max-len
     await this.companyRepository.persistAndFlush(company);
+
+    console.log(company);
+
     return company;
   }
 
@@ -41,6 +58,8 @@ export class CompanyService {
 
   async findOne(id: string) {
     const company = await this.companyRepository.findOneOrFail({ id });
+    console.log(company);
+
     return company;
   }
 }

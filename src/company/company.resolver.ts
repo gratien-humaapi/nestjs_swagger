@@ -1,6 +1,17 @@
-import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
-import { GqlValidationPipe } from "src/common";
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+  Info
+} from "@nestjs/graphql";
+import { fieldsToRelations, GqlValidationPipe } from "src/common";
 import { GraphQLUUID } from "graphql-scalars";
+import { Tenant } from "src/tenant";
+import { GraphQLResolveInfo } from "graphql";
 import { CompanyService } from "./company.service";
 import { Company } from "./entities/company.entity";
 import { CreateCompanyInput } from "./dto/create-company.input";
@@ -12,13 +23,17 @@ export class CompanyResolver {
 
   @Mutation(() => Company)
   createCompany(
-    @Args("input", new GqlValidationPipe()) input: CreateCompanyInput
+    @Args("input", new GqlValidationPipe()) input: CreateCompanyInput,
+    @Info() info: GraphQLResolveInfo
   ) {
     return this.companyService.create(input);
   }
 
   @Mutation(() => Company)
-  updateCompany(@Args("input") input: UpdateCompanyInput) {
+  updateCompany(
+    @Args("input") input: UpdateCompanyInput,
+    @Info() info: GraphQLResolveInfo
+  ) {
     return this.companyService.update(input);
   }
 
@@ -32,7 +47,24 @@ export class CompanyResolver {
   }
 
   @Query(() => Company, { name: "company" })
-  findOne(@Args("id", { type: () => GraphQLUUID }) id: string) {
+  findOne(
+    @Args("id", { type: () => GraphQLUUID }) id: string,
+    @Info() info: GraphQLResolveInfo
+  ) {
+    const relationPaths = fieldsToRelations(info);
+    console.log(relationPaths);
     return this.companyService.findOne(id);
   }
+
+  // // -------------------------------------------------------------------------
+  // // Resolve fields (extend fields on the entity)
+  // // -------------------------------------------------------------------------
+
+  // @ResolveField("tenant", () => Tenant)
+  // async tenant(
+  //   @Parent() parent: Company,
+  //   @Args("limit", { nullable: true }) limit: number
+  // ) {
+  //   return parent.tenant;
+  // }
 }
