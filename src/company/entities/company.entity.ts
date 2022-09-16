@@ -2,14 +2,15 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Entity, Property, Enum, ManyToOne } from "@mikro-orm/core";
 import { Field, HideField, ObjectType } from "@nestjs/graphql";
-import { IsUUID, MaxLength } from "class-validator";
+import { Equals, IsUUID, MaxLength, ValidateIf } from "class-validator";
 import { GraphQLUUID } from "graphql-scalars";
 import { Tenant } from "../../tenant";
 import { Currency } from "../../currency/entities/currency.entity";
 import {
   BaseEntityWithTUC,
   CommonStatusEnum,
-  CustomBaseEntity
+  CustomBaseEntity,
+  IsBusinessIndustry
 } from "../../common";
 import { CompanyRepository } from "../company.repository";
 
@@ -19,7 +20,8 @@ type CustomOptionalProps =
   | "tenantId"
   | "companyId"
   | "ownerId"
-  | "tenant";
+  | "tenant"
+  | "headOfficeName";
 
 @ObjectType()
 @Entity({ customRepository: () => CompanyRepository })
@@ -45,15 +47,22 @@ export class Company extends CustomBaseEntity<
   @Property()
   isGroup: boolean;
 
-  // @ManyToOne(() => Company, {
-  //   mapToPk: true
-  //   // onCreate: (e: Company) => (e.isGroup ? "" : e.headOffice)
-  // })
-  // headOffice: string;
+  @Field()
+  @Property({ persist: false })
+  get headOfficeName(): string {
+    return this.headOffice?.name ?? "";
+  }
+
+  @ManyToOne({
+    onCreate: (e: Company) => (e.isGroup ? null : e.headOffice)
+  })
+  @HideField()
+  headOffice?: Company;
 
   @Property()
+  @IsBusinessIndustry()
   @MaxLength(30)
-  industry: string;
+  industryCode: string;
 
   @Property()
   @MaxLength(256)
@@ -62,11 +71,12 @@ export class Company extends CustomBaseEntity<
   @ManyToOne()
   currency: Currency;
 
-  // @Property({ onCreate: (e: Company) => (e.isGroup ? e.id : e.headOffice) })
-  // @Property()
-  // @HideField()
-  // @IsUUID()
-  // companyId: string;
+  @Property({
+    onCreate: (e: Company) => (e.isGroup ? e.id : e.headOffice)
+  })
+  @HideField()
+  @IsUUID()
+  companyId: string;
 
   // @Property({ onCreate: (e: Company) => e.id })
   // @HideField()
