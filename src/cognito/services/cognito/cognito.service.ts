@@ -1,16 +1,17 @@
 import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { errorResponse, response } from "src/common";
 import camelcaseKeys from "camelcase-keys";
 import { createHmac } from "crypto";
+import { errorResponse, response } from "src/common";
 // eslint-disable-next-line import/no-cycle
 import { AuthClientErrorType } from "../../helpers";
 
 import { ICognitoConfig } from "../../cognito.config";
 import { ICognitoService } from "./types";
 
-const camelCase = <T>(data: T) => camelcaseKeys(data, { deep: true });
+const camelCase = <T extends Record<string, any> | T[]>(data: T) =>
+  camelcaseKeys(data, { deep: true });
 
 @Injectable()
 export class CognitoService {

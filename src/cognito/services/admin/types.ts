@@ -23,7 +23,8 @@ export type AdminUpdateUserUserAttributeInput = {
   isVerified?: boolean | null;
 };
 
-const camelCase = <T>(data: T) => camelcaseKeys(data, { deep: true });
+const camelCase = <T extends Record<string, any> | T[]>(data: T) =>
+  camelcaseKeys(data, { deep: true });
 
 export type AttributesCognitoType = NonNullable<
   DeepNonNullable<

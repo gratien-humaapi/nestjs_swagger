@@ -6,9 +6,9 @@ import {
   ExplicitAuthFlowsType,
   TimeUnitsType
 } from "@aws-sdk/client-cognito-identity-provider";
-import { errorResponse, response } from "src/common/utils";
+
 import camelcaseKeys from "camelcase-keys";
-import { DeepNonNullable } from "src/common";
+import { DeepNonNullable, errorResponse, response } from "src/common";
 // eslint-disable-next-line import/no-cycle
 import {
   attributesToCognitoFormat,
@@ -18,7 +18,8 @@ import {
 import { IAdminService, UserStatusEnum } from "./types";
 import { ICognitoConfig } from "../../cognito.config";
 
-const camelCase = <T>(data: T) => camelcaseKeys(data, { deep: true });
+const camelCase = <T extends Record<string, any> | T[]>(data: T) =>
+  camelcaseKeys(data, { deep: true });
 
 @Injectable()
 export class CognitoAdminService {
