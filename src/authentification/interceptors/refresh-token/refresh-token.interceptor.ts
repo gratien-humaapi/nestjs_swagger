@@ -20,9 +20,8 @@ export class RefreshTokenInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap((data) => {
-        const { authenticationResult } = data;
-        if (authenticationResult) {
-          const { refreshToken } = authenticationResult;
+        const { refreshToken } = data;
+        if (refreshToken) {
           return res.cookie(Cookie.refresh_token, refreshToken, {
             path: "/token",
             secure: true,

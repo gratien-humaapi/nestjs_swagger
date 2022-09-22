@@ -41,9 +41,7 @@ export class CognitoService {
    *  @see https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow.html#amazon-cognito-user-pools-admin-authentication-flow
    */
   signIn = async (params: ICognitoService["signIn"]) => {
-    const {
-      authParameters: { username, password }
-    } = params;
+    const { username, password } = params;
     try {
       const cognitoParams = {
         UserPoolId: this._userPoolID,
@@ -66,7 +64,7 @@ export class CognitoService {
       const resCamelCase = camelCase({
         ...rest
       });
-      const data = { ...resCamelCase };
+      const data = { ...resCamelCase.authenticationResult };
       return response(data);
     } catch (err) {
       return errorResponse(<AuthClientErrorType>err);
