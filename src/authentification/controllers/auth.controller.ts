@@ -4,10 +4,13 @@ import {
   Headers,
   Post,
   UseGuards,
-  UseInterceptors
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe
 } from "@nestjs/common";
 import { ICognitoService } from "src/cognito";
 import { JwtAuthGuard, Public } from "src/common";
+import { SignInUserDto } from "../dto";
 import {
   RefreshTokenInterceptor,
   RefreshTokenRevokeInterceptor
@@ -22,8 +25,9 @@ export class AuthController {
 
   @Public()
   @Post("sign-in")
+  @UsePipes(ValidationPipe)
   @UseInterceptors(RefreshTokenInterceptor)
-  async signIn(@Body() data: ICognitoService["signIn"]) {
+  async signIn(@Body() data: SignInUserDto) {
     return this._authService.signIn(data);
   }
 
