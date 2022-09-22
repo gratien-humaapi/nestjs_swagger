@@ -3,7 +3,7 @@
 import { Entity, Property, Enum, ManyToOne } from "@mikro-orm/core";
 import { ObjectType } from "@nestjs/graphql";
 import { MaxLength, ValidateIf } from "class-validator";
-import { BaseEntityWithTenantUser, UTC } from "../../common";
+import { BaseEntityWithTUC, UTC } from "../../common";
 import { OnlineStatusEnum, UserStatusEnum, UserTypeEnum } from "../enums";
 import { UserRepository } from "../user.repository";
 
@@ -11,7 +11,7 @@ type CustomOptionalProps = "isActive" | "description";
 
 @ObjectType()
 @Entity({ customRepository: () => UserRepository })
-export class User extends BaseEntityWithTenantUser<
+export class User extends BaseEntityWithTUC<
   UserRepository,
   CustomOptionalProps
 > {

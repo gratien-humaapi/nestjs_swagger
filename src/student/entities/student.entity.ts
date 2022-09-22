@@ -1,5 +1,5 @@
 import { Entity, Property } from "@mikro-orm/core";
-import { ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 import { IsEmail, MinLength } from "class-validator";
 import { CustomBaseEntity } from "../../common";
 // eslint-disable-next-line import/no-cycle
@@ -15,12 +15,15 @@ export class Student extends CustomBaseEntity<
 > {
   @Property()
   @MinLength(3)
+  @Field()
   name: string;
 
   @Property()
   @IsEmail()
+  @Field()
   email: string;
 
   @Property()
+  @Field()
   age?: number;
 }

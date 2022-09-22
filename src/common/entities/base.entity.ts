@@ -8,7 +8,7 @@ import {
   PrimaryKey,
   Property
 } from "@mikro-orm/core";
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, InputType } from "@nestjs/graphql";
 import { GraphQLUUID } from "graphql-scalars";
 import { v4 } from "uuid";
 
@@ -20,6 +20,7 @@ export interface IBaseEntity {
   updatedAt: Date;
 }
 
+@InputType({ isAbstract: true }) // needed for Maped type when using jest e2e @see https://stackoverflow.com/questions/59527847/input-object-type-typename-must-define-one-or-more-fields
 @ObjectType({ isAbstract: true })
 @Entity({ abstract: true })
 export abstract class CustomBaseEntity<Repository, T extends string = "">
