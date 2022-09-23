@@ -25,6 +25,7 @@ export class ErrorsInterceptor implements NestInterceptor {
           extensions: error.extensions,
           ...error
         });
+        console.error(error.constructor);
         switch (error.constructor) {
           case NotFoundError:
             throw new GraphQLError(error.message, {
