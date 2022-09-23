@@ -18,7 +18,7 @@ import { ErrorsInterceptor, JwtAuthGuard } from "./common";
 import { TenantModule } from "./tenant/tenant.module";
 import { CompanyModule } from "./company/company.module";
 import { UserModule } from "./user/user.module";
-import { CurrentUserSuscriber } from "./current-user-suscriber";
+import { AuthorizationModule } from "./authorization/authorization.module";
 
 @Module({
   imports: [
@@ -31,9 +31,12 @@ import { CurrentUserSuscriber } from "./current-user-suscriber";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        autoSchemaFile: "schema.gql",
+        autoSchemaFile: true,
+        // autoSchemaFile: "schema.gql",
         playground: false,
         resolvers: { UUID: GraphQLUUID },
+        // https://www.apollographql.com/blog/graphql/security/why-you-should-disable-graphql-introspection-in-production/
+        introspection: configService.get("NODE_ENV") !== "production",
         plugins:
           configService.get("NODE_ENV") === "production"
             ? []
@@ -55,7 +58,8 @@ import { CurrentUserSuscriber } from "./current-user-suscriber";
     CurrencyModule,
     TenantModule,
     CompanyModule,
-    UserModule
+    UserModule,
+    AuthorizationModule
     // DatabaseModule
     // PostsModule
   ],
@@ -67,8 +71,7 @@ import { CurrentUserSuscriber } from "./current-user-suscriber";
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsInterceptor
-    },
-    CurrentUserSuscriber
+    }
   ],
   controllers: [AppController]
 })

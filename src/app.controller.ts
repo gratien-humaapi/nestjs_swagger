@@ -13,6 +13,6 @@ export class AppController {
   @Public()
   @Get("test")
   test(@Req() req: Request) {
-    return req.cookies;
+    return "Hello World!";
   }
 }
