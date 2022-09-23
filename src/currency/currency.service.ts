@@ -79,4 +79,11 @@ export class CurrencyService {
       throw new ApolloError("operation failed");
     }
   }
+
+  async findOneByCode(name: string) {
+    const currency = await this.currencyRepository.findOneOrFail({
+      code: { $eq: `${name}` }
+    });
+    return currency;
+  }
 }

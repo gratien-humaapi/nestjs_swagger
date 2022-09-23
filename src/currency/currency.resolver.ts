@@ -10,6 +10,10 @@ import { UpdateCurrencyInput } from "./dto/update-currency.input";
 export class CurrencyResolver {
   constructor(private readonly currencyService: CurrencyService) {}
 
+  // // -------------------------------------------------------------------------
+  // // Mutation
+  // // -------------------------------------------------------------------------
+
   @Mutation(() => Currency)
   createCurrency(
     @CurrentUser() currentUser: ICurrentUser,
@@ -19,6 +23,20 @@ export class CurrencyResolver {
 
     return this.currencyService.create({ owner, tenant, ...input });
   }
+
+  @Mutation(() => Currency)
+  updateCurrency(@Args("input") input: UpdateCurrencyInput) {
+    return this.currencyService.update(input);
+  }
+
+  @Mutation(() => Currency)
+  removeCurrency(@Args("id", { type: () => Int }) id: string) {
+    return this.currencyService.remove(id);
+  }
+
+  // // -------------------------------------------------------------------------
+  // // Query
+  // // -------------------------------------------------------------------------
 
   @Query(() => [Currency], { name: "currencies" })
   findAll(@CurrentUser() currentUser: ICurrentUser) {
@@ -31,13 +49,8 @@ export class CurrencyResolver {
     return this.currencyService.findOne(id);
   }
 
-  @Mutation(() => Currency)
-  updateCurrency(@Args("input") input: UpdateCurrencyInput) {
-    return this.currencyService.update(input);
-  }
-
-  @Mutation(() => Currency)
-  removeCurrency(@Args("id", { type: () => Int }) id: string) {
-    return this.currencyService.remove(id);
+  @Query(() => Currency, { name: "currencyByCode" })
+  findOneByCode(@Args("code") code: string) {
+    return this.currencyService.findOneByCode(code);
   }
 }

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { Entity, Property } from "@mikro-orm/core";
+import { Entity, Index, Property, Unique } from "@mikro-orm/core";
 import { ObjectType, Field, ID } from "@nestjs/graphql";
 import { IsUppercase, Length, MaxLength } from "class-validator";
 import { CustomBaseEntity } from "../../common";
@@ -20,11 +20,13 @@ export class Currency extends CustomBaseEntity<
   @Property()
   @Length(3)
   @IsUppercase()
+  @Unique()
   code: string;
 
   @Property()
   @MaxLength(30)
   @IsUppercase()
+  @Unique()
   name: string;
 
   @Property()
