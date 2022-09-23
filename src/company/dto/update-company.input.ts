@@ -8,7 +8,10 @@ export class UpdateCompanyInput extends OmitType(
     "createdAt",
     "updatedAt",
     "isActive",
-    "currency"
+    "currency",
+    "headOffice",
+    "headOfficeName",
+    "isGroup"
 
     // "modifiedBy",
     // "tenantId",

@@ -1,6 +1,13 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { Entity, Property, Enum, ManyToOne } from "@mikro-orm/core";
+import {
+  Entity,
+  Property,
+  Enum,
+  ManyToOne,
+  Index,
+  Unique
+} from "@mikro-orm/core";
 import { Field, HideField, ObjectType } from "@nestjs/graphql";
 import { Equals, IsUUID, MaxLength, ValidateIf } from "class-validator";
 import { GraphQLUUID } from "graphql-scalars";
@@ -21,7 +28,8 @@ type CustomOptionalProps =
   | "companyId"
   | "ownerId"
   | "tenant"
-  | "headOfficeName";
+  | "headOfficeName"
+  | "isGroup";
 
 @ObjectType()
 @Entity({ customRepository: () => CompanyRepository })
@@ -39,12 +47,16 @@ export class Company extends CustomBaseEntity<
   status: CommonStatusEnum;
 
   @Property()
+  @Unique()
+  @Index({ type: "fulltext" })
   name: string;
 
   @Property()
   abbreviation: string;
 
-  @Property()
+  @Property({
+    onCreate: (e: Company) => !e.headOffice
+  })
   isGroup: boolean;
 
   @Field()
@@ -53,9 +65,7 @@ export class Company extends CustomBaseEntity<
     return this.headOffice?.name ?? "";
   }
 
-  @ManyToOne({
-    onCreate: (e: Company) => (e.isGroup ? null : e.headOffice)
-  })
+  @ManyToOne()
   @HideField()
   headOffice?: Company;
 
@@ -72,7 +82,7 @@ export class Company extends CustomBaseEntity<
   currency: Currency;
 
   @Property({
-    onCreate: (e: Company) => (e.isGroup ? e.id : e.headOffice)
+    onCreate: (e: Company) => (e.headOffice ? e.headOffice : e.id)
   })
   @HideField()
   @IsUUID()

@@ -1,9 +1,12 @@
+import { LoadStrategy } from "@mikro-orm/core";
+import { AutoPath } from "@mikro-orm/core/typings";
 import { Injectable } from "@nestjs/common";
-import { CommonStatusEnum } from "src/common";
+import { CommonStatusEnum, CustomBaseEntity } from "src/common";
 import { CurrencyRepository } from "src/currency/currency.repository";
 import { CompanyRepository } from "./company.repository";
 import { CreateCompanyInput } from "./dto/create-company.input";
 import { UpdateCompanyInput } from "./dto/update-company.input";
+import { Company } from "./entities/company.entity";
 
 @Injectable()
 export class CompanyService {
@@ -17,19 +20,27 @@ export class CompanyService {
       id: input.currencyId
     });
 
+    // const isGroup = (!input.isGroup && !input.headOfficeId) ?? input.isGroup;
+    const headOffice = input.headOfficeId
+      ? await this.findOne({ id: input.headOfficeId })
+      : undefined;
+
     const company = this.companyRepository.create({
       // tenant: {
       //   status: input.status,
       //   name: input.name,
       //   description: input.description
       // },
+
       currency,
+      headOffice,
       ...input
+      // isGroup
     });
 
     await this.companyRepository.persistAndFlush(company);
 
-    console.log(company);
+    // console.log(company instanceof CustomBaseEntity);
 
     return company;
   }
@@ -50,16 +61,52 @@ export class CompanyService {
 
     return company;
   }
-
+  //
   async findAll() {
-    const companies = await this.companyRepository.findAll();
+    const companies = await this.companyRepository.findAll({
+      populate: ["currency"],
+      strategy: LoadStrategy.JOINED
+    });
     return companies;
   }
 
-  async findOne(id: string) {
-    const company = await this.companyRepository.findOneOrFail({ id });
-    console.log(company);
+  async findAllByName(params: {
+    name: string;
+    populate?: AutoPath<Company, string>[];
+  }) {
+    const { name, populate } = params;
+    const companies = await this.companyRepository.find(
+      {
+        name: { $like: `${name}%` }
+      },
+      { populate }
+    );
+    return companies;
+  }
 
+  async findOne(params: {
+    id: string;
+    populate?: AutoPath<Company, string>[];
+  }) {
+    const { id, populate } = params;
+    const company = await this.companyRepository.findOneOrFail(
+      { id },
+      { populate }
+    );
+    return company;
+  }
+
+  async findOneByName(params: {
+    name: string;
+    populate?: AutoPath<Company, string>[];
+  }) {
+    const { name, populate } = params;
+    const company = await this.companyRepository.findOneOrFail(
+      {
+        name: { $eq: `${name}` }
+      },
+      { populate }
+    );
     return company;
   }
 }

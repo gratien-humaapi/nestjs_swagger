@@ -10,9 +10,11 @@ export class CreateCompanyInput extends OmitType(
     "updatedAt",
     "id",
     "isActive",
-    "currency"
-    // "tenantId",
-    // "companyId",
+    "currency",
+    "headOffice",
+    "headOfficeName",
+    "companyId",
+    "isGroup"
     // "ownerId"
     // "tenant"
   ] as const,
@@ -20,4 +22,7 @@ export class CreateCompanyInput extends OmitType(
 ) {
   @Field(() => GraphQLUUID)
   currencyId: string;
+
+  @Field(() => GraphQLUUID)
+  headOfficeId?: string;
 }
