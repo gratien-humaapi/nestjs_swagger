@@ -1,5 +1,6 @@
 test.js
 /temp
+/graphql
 
 # compiled output
 /dist

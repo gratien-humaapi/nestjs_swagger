@@ -1,0 +1,10 @@
+{
+  // "files.exclude": {
+  //   "node_modules": false
+  // },
+  // "editor.codeActionsOnSave": {
+  //   "source.fixAll.eslint": false
+  // },
+  // "files.eol": "\n"
+  "jestrunner.jestCommand": "npm run test:e2e"
+}

@@ -18,7 +18,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "codegen:sdk": "npm run codegen:graphql && graphql-codegen --config codegen.yml",
+    "codegen:graphql": "ts-node scripts/generateGqlOperations.ts generate http://localhost:3001/graphql --limit=3"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.150.0",
@@ -55,6 +57,14 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@apollo/client": "^3.6.9",
+    "@graphql-codegen/add": "^3.2.1",
+    "@graphql-codegen/cli": "2.12.0",
+    "@graphql-codegen/introspection": "2.2.1",
+    "@graphql-codegen/typescript": "2.7.3",
+    "@graphql-codegen/typescript-generic-sdk": "^3.0.1",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
+    "@graphql-codegen/typescript-resolvers": "2.7.3",
     "@mikro-orm/cli": "^5.2.4",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
@@ -70,6 +80,9 @@
     "@types/verror": "^1.10.6",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "commander": "^9.4.0",
+    "cross-fetch": "^3.1.5",
+    "dotenv": "^16.0.2",
     "eslint": "^8.0.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",
@@ -83,7 +96,8 @@
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^3.10.1",
+    "tsconfig-paths": "^4.1.0",
+    "type-fest": "^3.0.0",
     "typescript": "^4.5.5"
   },
   "mikro-orm": {
