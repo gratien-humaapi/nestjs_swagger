@@ -5,6 +5,7 @@ import { ArgumentMetadata, Injectable, PipeTransform } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { GraphQLError } from "graphql";
+import { GQLErrorCode } from "../enums";
 
 @Injectable()
 export class GqlValidationPipe<T> implements PipeTransform<T> {
@@ -23,7 +24,7 @@ export class GqlValidationPipe<T> implements PipeTransform<T> {
       }));
       throw new GraphQLError("Bad user input", {
         extensions: {
-          code: "CUSTOM_BAD_USER_INPUT",
+          code: GQLErrorCode.CUSTOM_BAD_USER_INPUT,
           validationErrors: graphqlError
         }
       });
