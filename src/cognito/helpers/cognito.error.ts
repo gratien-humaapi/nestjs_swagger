@@ -1,10 +1,10 @@
 import { InternalErrorException } from "@aws-sdk/client-cognito-identity-provider/dist-types/models";
 
-export type AuthClientErrorType = Omit<InternalErrorException, "name"> & {
+export type CognitoErrorType = Omit<InternalErrorException, "name"> & {
   name: AuthExceptionName;
 };
 
-export class AuthClientError extends Error {
+export class CognitoError extends Error {
   fault: "server" | "client";
 
   // metadata: InternalErrorException['$metadata'];
@@ -14,11 +14,13 @@ export class AuthClientError extends Error {
 
   type?: string; // for appsync error (errorType)
 
+  statusCode?: number;
+
   // rest: object;
-  constructor(errObj: AuthClientErrorType, ...params: any[]) {
+  constructor(errObj: CognitoErrorType, ...params: any[]) {
     super(...params);
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AuthClientError);
+      Error.captureStackTrace(this, CognitoError);
     }
 
     this.message = errObj.message ? errObj.message : "";
@@ -31,6 +33,7 @@ export class AuthClientError extends Error {
     this.name = errObj.name;
     // this.service = errObj.$service;
     this.type = `AUTH_ERROR-${this.name}`;
+    this.statusCode = errObj.$metadata.httpStatusCode;
   }
 }
 

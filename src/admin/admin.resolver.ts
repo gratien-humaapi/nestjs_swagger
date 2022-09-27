@@ -34,7 +34,7 @@ export class AdminResolver {
 
   @Mutation(() => Company)
   adminCreateCompany(
-    @Args("input", new GqlValidationPipe()) input: CreateCompanyInput,
+    @Args("input") input: CreateCompanyInput,
     @Info() info: GraphQLResolveInfo
   ) {
     return this._companyService.create(input);

@@ -5,16 +5,6 @@ import {
   InternalErrorException
 } from "@aws-sdk/client-cognito-identity-provider";
 
-export enum UserStatusEnum {
-  UNCONFIRMED = "UNCONFIRMED",
-  CONFIRMED = "CONFIRMED",
-  ARCHIVED = "ARCHIVED",
-  COMPROMISED = "COMPROMISED",
-  UNKNOWN = "UNKNOWN",
-  RESET_REQUIRED = "RESET_REQUIRED",
-  FORCE_CHANGE_PASSWORD = "FORCE_CHANGE_PASSWORD"
-}
-
 type CognitoClientType = InstanceType<typeof CognitoIdentityProvider>;
 
 export type AdminUpdateUserUserAttributeInput = {
@@ -82,6 +72,24 @@ type AdminDeleteUserParamsCamelCase = ReturnType<
 type AdminDeleteUserNormalizedParams = AdminDeleteUserParamsCamelCase;
 
 // ### Delete User type  ###  End
+
+// ### Get User type  ###  Start
+type AdminGetUserParams = Omit<
+  Parameters<CognitoClientType["adminGetUser"]>[0],
+  "UserPoolId"
+>;
+
+const adminGetUserParamsCamelCase = (
+  params: DeepNonNullable<AdminGetUserParams>
+) => camelCase(params);
+
+type AdminGetUserParamsCamelCase = ReturnType<
+  typeof adminGetUserParamsCamelCase
+>;
+
+type AdminGetUserNormalizedParams = AdminGetUserParamsCamelCase;
+
+// ### Get User type  ###  End
 
 // ### Create Add User to Group  ###  Start
 type AdminAddUserToGroup = Omit<
@@ -202,6 +210,7 @@ interface IAdminUpdateTokensParams {
 export interface IAdminService {
   adminCreateUserParams: AdminCreateUserNormalizedParams;
   adminDeleteUserParams: AdminDeleteUserNormalizedParams;
+  adminGetUserParams: AdminGetUserNormalizedParams;
   adminAddUsertoGroupParams: AdminAddUserToGroupNormalizedParams;
   adminRemoveUserFromGroupParams: AdminAddUserToGroupNormalizedParams;
   adminListGroupsForUserParams: AdminListGroupsForUserNormalizedParams;

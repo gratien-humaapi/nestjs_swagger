@@ -5,7 +5,7 @@ import camelcaseKeys from "camelcase-keys";
 import { createHmac } from "crypto";
 import { errorResponse, response } from "src/common";
 // eslint-disable-next-line import/no-cycle
-import { AuthClientErrorType } from "../../helpers";
+import { CognitoErrorType } from "../../helpers";
 
 import { ICognitoConfig } from "../../cognito.config";
 import { ICognitoService } from "./types";
@@ -61,13 +61,23 @@ export class CognitoService {
         cognitoParams
       );
 
-      const resCamelCase = camelCase({
+      const { authenticationResult, ...resCamelCase } = camelCase({
         ...rest
       });
-      const data = { ...resCamelCase.authenticationResult };
+
+      // console.log(resCamelCase);
+
+      const data = {
+        ...resCamelCase,
+        authenticationResult: {
+          accessToken: authenticationResult?.idToken,
+          expiresIn: authenticationResult?.expiresIn,
+          refreshToken: authenticationResult?.refreshToken
+        }
+      };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
   newPasswordRequired = async (
@@ -93,14 +103,21 @@ export class CognitoService {
       const { $metadata, ...rest } =
         await this._client.adminRespondToAuthChallenge(cognitoParams);
 
-      const resCamelCase = camelCase({
+      const { authenticationResult, ...resCamelCase } = camelCase({
         ...rest
       });
-      console.log(resCamelCase);
-      const data = { ...resCamelCase };
+      const data = {
+        ...resCamelCase,
+        authenticationResult: {
+          accessToken: authenticationResult?.idToken,
+          expiresIn: authenticationResult?.expiresIn,
+          refreshToken: authenticationResult?.refreshToken
+        }
+      };
+
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -114,7 +131,7 @@ export class CognitoService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -139,7 +156,7 @@ export class CognitoService {
       const data = { ...codeDeliveryDetails };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -165,7 +182,7 @@ export class CognitoService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -181,7 +198,7 @@ export class CognitoService {
       // const data = { done: false };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -215,7 +232,7 @@ export class CognitoService {
       // const data = { done: false };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -238,7 +255,7 @@ export class CognitoService {
       const data = { ...codeDeliveryDetails };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -257,7 +274,7 @@ export class CognitoService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 

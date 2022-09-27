@@ -9,13 +9,15 @@ import {
 
 import camelcaseKeys from "camelcase-keys";
 import { DeepNonNullable, errorResponse, response } from "src/common";
+
+import { CognitoUserStatusEnum } from "src/cognito";
 // eslint-disable-next-line import/no-cycle
 import {
   attributesToCognitoFormat,
   attributesToStandard,
-  AuthClientErrorType
+  CognitoErrorType
 } from "../../helpers";
-import { IAdminService, UserStatusEnum } from "./types";
+import { IAdminService } from "./types";
 import { ICognitoConfig } from "../../cognito.config";
 
 const camelCase = <T extends Record<string, any> | T[]>(data: T) =>
@@ -66,20 +68,20 @@ export class CognitoAdminService {
         UserStatus,
         ...Other
       } = authUserData;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      console.log(Attributes);
       const attributes = attributesToStandard(Attributes!);
-      const userStatus = UserStatus as UserStatusEnum;
+      const userStatus = UserStatus as CognitoUserStatusEnum;
       const other = camelCase({
         attributes,
         userStatus,
+        userCreateDate: new Date(),
+        userLastModifiedDate: new Date(),
         ...Other
       });
       const data = { ...(other as DeepNonNullable<typeof other>) };
 
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -88,17 +90,50 @@ export class CognitoAdminService {
       UserPoolId: this._userPoolID,
       Username: params.username
     };
-    console.log("marche");
     try {
       const { $metadata, ...rest } = await this._client.adminDeleteUser(
         cognitoParams
       );
       const data = { done: true };
-      console.log("marche");
+      return response(data);
+    } catch (err) {
+      return errorResponse(<CognitoErrorType>err);
+    }
+  };
+
+  adminGetUser = async (params: IAdminService["adminGetUserParams"]) => {
+    const cognitoParams = {
+      UserPoolId: this._userPoolID,
+      Username: params.username
+    };
+    try {
+      const {
+        $metadata,
+        UserAttributes,
+        MFAOptions,
+        PreferredMfaSetting,
+        UserMFASettingList,
+        ...rest
+      } = await this._client.adminGetUser(cognitoParams);
+      const nonNullData = rest as NonNullable<DeepNonNullable<typeof rest>>;
+      const camelCaseData = camelCase(nonNullData);
+      const newUserAttributes = UserAttributes! as NonNullable<
+        DeepNonNullable<typeof UserAttributes>
+      >;
+
+      const attributes = attributesToStandard(newUserAttributes);
+      const username = attributes.find(({ name }) => name === "email")?.value;
+      const data = {
+        ...camelCaseData,
+        attributes,
+        username
+      };
+
+      console.log(data);
 
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -116,7 +151,7 @@ export class CognitoAdminService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -134,7 +169,7 @@ export class CognitoAdminService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -164,7 +199,7 @@ export class CognitoAdminService {
       const data = { ...newRes };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -180,7 +215,7 @@ export class CognitoAdminService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -197,7 +232,7 @@ export class CognitoAdminService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -218,7 +253,7 @@ export class CognitoAdminService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -237,7 +272,7 @@ export class CognitoAdminService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -270,7 +305,7 @@ export class CognitoAdminService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 
@@ -292,7 +327,7 @@ export class CognitoAdminService {
       const data = { done: true };
       return response(data);
     } catch (err) {
-      return errorResponse(<AuthClientErrorType>err);
+      return errorResponse(<CognitoErrorType>err);
     }
   };
 }
