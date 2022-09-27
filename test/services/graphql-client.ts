@@ -4,16 +4,13 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import {
   ApolloClient,
-  ApolloError,
   createHttpLink,
   gql,
   InMemoryCache,
-  NormalizedCacheObject,
-  ServerError
+  NormalizedCacheObject
 } from "@apollo/client/core";
 import { setContext } from "@apollo/client/link/context";
 import fetch from "cross-fetch";
-import { authService } from "test/services/$auth-service";
 import { IGqlGetInput, IGqlLisInput, IGqlMutationInput } from "../utils";
 
 interface IGraphqlClient {

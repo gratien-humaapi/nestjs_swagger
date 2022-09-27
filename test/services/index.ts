@@ -1,2 +1,2 @@
-export * from "./$auth-service";
+export * from "./hm-auth-service";
 export * from "./session-service";
