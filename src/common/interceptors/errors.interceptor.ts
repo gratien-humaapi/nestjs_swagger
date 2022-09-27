@@ -9,6 +9,8 @@ import {
 import { catchError, Observable, tap } from "rxjs";
 import { GraphQLError } from "graphql/error/GraphQLError";
 import { NotFoundError } from "@mikro-orm/core";
+import { CognitoError } from "src/cognito";
+import { GQLErrorCode } from "../enums";
 
 @Injectable()
 export class ErrorsInterceptor implements NestInterceptor {
@@ -20,19 +22,38 @@ export class ErrorsInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       catchError((error) => {
-        console.error({
+        console.error("\x1b[36m", {
           message: error.message,
           extensions: error.extensions,
           ...error
         });
-        console.error(error.constructor);
+        // console.error(error.constructor);
         switch (error.constructor) {
           case NotFoundError:
             throw new GraphQLError(error.message, {
               extensions: {
-                code: "CUSTOM_NOT_FOUND"
+                code: GQLErrorCode.CUSTOM_NOT_FOUND
               }
             });
+          case CognitoError:
+            switch (error.name) {
+              case "InvalidParameterException":
+                throw new GraphQLError(error.message, {
+                  extensions: {
+                    code: GQLErrorCode.CUSTOM_BAD_USER_INPUT
+                  }
+                });
+
+              case "UserNotFoundException":
+                throw new GraphQLError(error.message, {
+                  extensions: {
+                    code: GQLErrorCode.CUSTOM_NOT_FOUND
+                  }
+                });
+
+              default:
+                throw new GraphQLError("operation failed", {});
+            }
 
           case GraphQLError:
             return next.handle();
