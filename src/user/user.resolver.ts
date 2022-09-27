@@ -12,7 +12,7 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(() => User)
-  createUser(@Args("input", new GqlValidationPipe()) input: CreateUserInput) {
+  createUser(@Args("input") input: CreateUserInput) {
     return this.userService.create(input);
   }
 

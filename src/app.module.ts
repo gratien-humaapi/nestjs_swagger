@@ -13,8 +13,8 @@ import { MikroORM } from "@mikro-orm/core";
 import { StudentModule } from "./student/student.module";
 import { CurrencyModule } from "./currency/currency.module";
 import { GraphQLUUID } from "graphql-scalars";
-import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
-import { ErrorsInterceptor, JwtAuthGuard } from "./common";
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
+import { ErrorsInterceptor, GqlValidationPipe, JwtAuthGuard } from "./common";
 import { TenantModule } from "./tenant/tenant.module";
 import { CompanyModule } from "./company/company.module";
 import { UserModule } from "./user/user.module";
@@ -71,6 +71,10 @@ import { AuthorizationModule } from "./authorization/authorization.module";
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsInterceptor
+    },
+    {
+      provide: APP_PIPE,
+      useClass: GqlValidationPipe
     }
   ],
   controllers: [AppController]

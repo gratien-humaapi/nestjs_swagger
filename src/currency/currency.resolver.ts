@@ -17,7 +17,7 @@ export class CurrencyResolver {
   @Mutation(() => Currency)
   createCurrency(
     @CurrentUser() currentUser: ICurrentUser,
-    @Args("input", new GqlValidationPipe()) input: CreateCurrencyInput
+    @Args("input") input: CreateCurrencyInput
   ) {
     const { owner, tenant } = currentUser;
 

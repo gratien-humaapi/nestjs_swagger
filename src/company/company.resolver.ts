@@ -23,7 +23,7 @@ export class CompanyResolver {
 
   @Mutation(() => Company)
   createCompany(
-    @Args("input", new GqlValidationPipe()) input: CreateCompanyInput,
+    @Args("input") input: CreateCompanyInput,
     @Info() info: GraphQLResolveInfo
   ) {
     return this.companyService.create(input);

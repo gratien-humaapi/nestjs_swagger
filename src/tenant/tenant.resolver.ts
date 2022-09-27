@@ -12,9 +12,7 @@ export class TenantResolver {
   constructor(private readonly tenantService: TenantService) {}
 
   @Mutation(() => Tenant)
-  createTenant(
-    @Args("input", new GqlValidationPipe()) input: CreateTenantInput
-  ) {
+  createTenant(@Args("input") input: CreateTenantInput) {
     return this.tenantService.create(input);
   }
 
