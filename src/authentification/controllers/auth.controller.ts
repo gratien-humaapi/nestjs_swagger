@@ -3,13 +3,14 @@ import {
   Controller,
   Headers,
   Post,
+  UseFilters,
   UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe
 } from "@nestjs/common";
 import { ICognitoService } from "src/cognito";
-import { JwtAuthGuard, Public } from "src/common";
+import { AuthClienExceptionFilter, JwtAuthGuard, Public } from "src/common";
 import { SignInUserDto } from "../dto";
 import {
   RefreshTokenInterceptor,
@@ -17,7 +18,7 @@ import {
 } from "../interceptors";
 import { AuthService } from "../services";
 
-// @UseGuards(JwtAuthGuard)
+@UseFilters(AuthClienExceptionFilter)
 @Controller("auth")
 export class AuthController {
   constructor(private _authService: AuthService) {}

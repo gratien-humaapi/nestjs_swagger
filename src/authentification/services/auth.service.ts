@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 // import { JwtService } from "@nestjs/jwt";
-import { ICognitoService, CognitoService, AuthClientError } from "src/cognito";
+import { ICognitoService, CognitoService, CognitoError } from "src/cognito";
 import { isResolved } from "src/common";
 
 @Injectable()
@@ -13,7 +13,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
@@ -24,7 +24,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
@@ -35,7 +35,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
@@ -46,7 +46,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
@@ -59,7 +59,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
@@ -70,7 +70,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
@@ -83,7 +83,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
@@ -94,7 +94,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
@@ -109,7 +109,7 @@ export class AuthService {
       const { error } = res;
       console.log(error);
 
-      throw new AuthClientError(error);
+      throw new CognitoError(error);
     }
     return res.data;
   }
