@@ -5,22 +5,21 @@ import {
 } from "@apollo/client/core";
 import { setContext } from "@apollo/client/link/context";
 import fetch from "cross-fetch";
-import { getSdkApollo } from "../utils";
-import { authService, I$AuthService } from "./$auth-service";
-import { graphqlClient } from "./graphql-client";
+import { getSdkApollo, IHMAuthSDK } from "../utils";
+import { authService } from "./hm-auth-service";
 
 interface ISessionService {
   url: string;
-  authParams: I$AuthService["signInParam"];
+  authParams: IHMAuthSDK["signInParam"];
 }
 
 export const sessionFactory = async (params: ISessionService) => {
   const { url, authParams } = params;
-  const auth = authService(url);
+  const auth = authService({ url, fetch });
   const res = await auth.signIn({ ...authParams });
 
   // Apollo
-  const accessToken = res.idToken;
+  const accessToken = res.authenticationResult?.accessToken;
   const authLink = setContext((_, { headers }) => ({
     headers: {
       ...headers,
