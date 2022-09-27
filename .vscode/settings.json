@@ -6,5 +6,6 @@
   //   "source.fixAll.eslint": false
   // },
   // "files.eol": "\n"
-  "jestrunner.jestCommand": "npm run test:e2e"
+  "jestrunner.jestCommand": "npm run test:e2e",
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
