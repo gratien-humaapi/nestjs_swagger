@@ -1,1 +1,1 @@
-export * from "./create-user.dto";
+export * from "./admin-create-user.input";

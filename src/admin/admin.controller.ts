@@ -6,9 +6,9 @@ import {
   ValidationPipe,
   UseGuards
 } from "@nestjs/common";
-import { AuthClientError } from "src/cognito";
+import { CognitoError } from "src/cognito";
 import { JwtAuthGuard } from "src/common";
-import { AdminCreateUserDto } from "./dto";
+// import { AdminCreateUserDto } from "./dto";
 import { AdminService } from "./services";
 
 @UseGuards(JwtAuthGuard)
@@ -21,7 +21,7 @@ export class AdminController {
       const res = await this._adminService.adminEnableUser({ username });
       return res;
     } catch (err) {
-      return <AuthClientError>err;
+      return <CognitoError>err;
     }
   }
 
@@ -31,7 +31,7 @@ export class AdminController {
       const res = await this._adminService.adminDisableUser({ username });
       return res;
     } catch (err) {
-      return <AuthClientError>err;
+      return <CognitoError>err;
     }
   }
 
@@ -48,24 +48,24 @@ export class AdminController {
       const res = await this._adminService.adminUpdateTokensExpireIn(params);
       return res;
     } catch (err) {
-      return <AuthClientError>err;
+      return <CognitoError>err;
     }
   }
 
-  @Post("create-user")
-  async adminCreateUser(
-    @Body(new ValidationPipe()) params: AdminCreateUserDto
-    // @Headers() headers
-  ) {
-    // console.log(headers);
+  // @Post("create-user")
+  // async adminCreateUser(
+  //   @Body(new ValidationPipe()) params: AdminCreateUserDto
+  //   // @Headers() headers
+  // ) {
+  //   // console.log(headers);
 
-    try {
-      const res = await this._adminService.adminCreateUser(params);
-      console.log(res);
+  //   try {
+  //     const res = await this._adminService.adminCreateUser(params);
+  //     console.log(res);
 
-      return res;
-    } catch (err) {
-      return <AuthClientError>err;
-    }
-  }
+  //     return res;
+  //   } catch (err) {
+  //     return <CognitoError>err;
+  //   }
+  // }
 }

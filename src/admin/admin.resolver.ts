@@ -1,18 +1,32 @@
-import { Resolver, Query, Mutation, Args, Info } from "@nestjs/graphql";
+/* eslint-disable max-classes-per-file */
 import {
-  GqlSelections,
-  fieldsToRelations,
-  GqlValidationPipe
-} from "src/common";
-import { GraphQLUUID } from "graphql-scalars";
-import { Tenant } from "src/tenant";
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Info,
+  ObjectType,
+  Field
+} from "@nestjs/graphql";
+import { GqlValidationPipe } from "src/common";
 import { GraphQLResolveInfo } from "graphql";
-import { AutoPath } from "@mikro-orm/core/typings";
 import { Company, CompanyService, CreateCompanyInput } from "src/company";
+import { AdminCreateUserInput } from "./dto";
+import { AdminService } from "./services";
+import { AuthUser } from "./entities";
+
+@ObjectType()
+class TempClass {
+  @Field()
+  done: boolean;
+}
 
 @Resolver()
 export class AdminResolver {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(
+    private readonly _companyService: CompanyService,
+    private readonly _adminService: AdminService
+  ) {}
 
   // // -------------------------------------------------------------------------
   // // Mutation
@@ -23,18 +37,18 @@ export class AdminResolver {
     @Args("input", new GqlValidationPipe()) input: CreateCompanyInput,
     @Info() info: GraphQLResolveInfo
   ) {
-    return this.companyService.create(input);
+    return this._companyService.create(input);
   }
 
-  // @Mutation(() => Company)
-  // updateCompany(@Args("input") input: UpdateCompanyInput) {
-  //   return this.companyService.update(input);
-  // }
+  @Mutation(() => AuthUser)
+  adminCreateUser(@Args("input") input: AdminCreateUserInput) {
+    return this._adminService.adminCreateUser(input);
+  }
 
-  // @Mutation(() => Company)
-  // removeCompany(@Args("id", { type: () => GraphQLUUID }) id: string) {
-  //   return this.companyService.remove(id);
-  // }
+  @Mutation(() => TempClass)
+  adminDeleteUser(@Args("username") username: string) {
+    return this._adminService.adminDeleteUser({ username });
+  }
 
   // // // -------------------------------------------------------------------------
   // // // Query
@@ -45,13 +59,10 @@ export class AdminResolver {
   //   return this.companyService.findAll();
   // }
 
-  // @Query(() => Company, { name: "company" })
-  // findOne(
-  //   @Args("id", { type: () => GraphQLUUID }) id: string,
-  //   @GqlSelections() populate: AutoPath<Company, string>[]
-  // ) {
-  //   return this.companyService.findOne({ id, populate });
-  // }
+  @Query(() => AuthUser)
+  adminGetUser(@Args("username") username: string) {
+    return this._adminService.adminGetUser({ username });
+  }
 
   // // -------------------------------------------------------------------------
   // // Resolve fields (extend fields on the entity)
