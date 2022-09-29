@@ -13,19 +13,13 @@ import { IAdminService } from "src/cognito";
 import { AuthUser } from "../entities";
 
 @InputType()
-export class AdminCreateUserInput extends PickType(
+export class AdminSetUserPasswordInput extends PickType(
   AuthUser,
-  ["attributes", "username"] as const,
+  ["username"] as const,
   InputType
 ) {
   @IsString()
-  temporaryPassword: string;
+  password: string;
 
-  /** whether the temporary password should be permanent or not */
   permanent: boolean = false;
-
-  @IsBoolean()
-  sendPassword: boolean = false;
-
-  desiredDeliveryMediums?: string[];
 }

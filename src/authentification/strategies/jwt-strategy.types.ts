@@ -15,4 +15,6 @@ export interface IidTokenDecoded {
   email_verified: boolean;
   "cognito:username": string;
   "custom:tenantId": string;
+  "custom:admin": string;
+  "cognito:groups": string;
 }

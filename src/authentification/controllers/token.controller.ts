@@ -1,6 +1,7 @@
-import { Body, Controller, Post, Req } from "@nestjs/common";
+import { Body, Controller, Post, Req, ValidationPipe } from "@nestjs/common";
 import { Request } from "express";
-import { Cookie } from "src/common";
+import { Cookie, Public } from "src/common";
+import { RefreshTokenDTO } from "../dto";
 import { AuthService } from "../services";
 
 @Controller("token")
@@ -15,11 +16,13 @@ export class TokenController {
     return undefined;
   }
 
-  @Post("refresh-tokens")
-  async refresh(@Req() req: Request, @Body("sub") sub: string) {
+  @Post("web-refresh-tokens")
+  @Public()
+  async webRefresh(@Req() req: Request, @Body("sub") sub: string) {
     const refreshToken = req.cookies[Cookie.refresh_token] as
       | string
       | undefined;
+
     if (!refreshToken) {
       return undefined;
     }
@@ -27,6 +30,22 @@ export class TokenController {
       refreshToken,
       sub
     });
+
+    return res;
+  }
+
+  @Post("refresh-tokens")
+  @Public()
+  async refresh(@Body(new ValidationPipe()) params: RefreshTokenDTO) {
+    const { refreshToken, sub } = params;
+    if (!refreshToken) {
+      return undefined;
+    }
+    const res = await this._authService.refreshAccessAndIDToken({
+      refreshToken,
+      sub
+    });
+
     return res;
   }
 }

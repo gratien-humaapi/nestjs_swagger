@@ -4,6 +4,7 @@ import { CognitoError, CognitoAdminService, IAdminService } from "src/cognito";
 
 import { isResolved } from "src/common";
 import { CompanyService, CreateCompanyInput } from "src/company";
+import { AdminCreateUserInput } from "../dto";
 
 @Injectable()
 export class AdminService {
@@ -16,8 +17,28 @@ export class AdminService {
     return this._companyService.create(input);
   };
 
-  adminCreateUser = async (params: IAdminService["adminCreateUserParams"]) => {
+  adminCreateUser = async (params: AdminCreateUserInput) => {
+    const { temporaryPassword, permanent, username } = params;
     const res = await this._cognitoAdminService.adminCreateUser(params);
+    if (!isResolved(res)) {
+      const { error } = res;
+      throw new CognitoError(error);
+    }
+
+    if (params.permanent) {
+      await this.adminSetUserPassword({
+        password: temporaryPassword,
+        permanent,
+        username
+      });
+    }
+    return res.data;
+  };
+
+  adminSetUserPassword = async (
+    params: IAdminService["adminSetUserPasswordParams"]
+  ) => {
+    const res = await this._cognitoAdminService.adminSetUserPassword(params);
     if (!isResolved(res)) {
       const { error } = res;
       throw new CognitoError(error);
@@ -27,6 +48,17 @@ export class AdminService {
 
   adminDeleteUser = async (params: IAdminService["adminDeleteUserParams"]) => {
     const res = await this._cognitoAdminService.adminDeleteUser(params);
+    if (!isResolved(res)) {
+      const { error } = res;
+      throw new CognitoError(error);
+    }
+    return res.data;
+  };
+
+  adminConfirmSignUp = async (
+    params: IAdminService["adminConfirmSignUpParams"]
+  ) => {
+    const res = await this._cognitoAdminService.adminConfirmSignUp(params);
     if (!isResolved(res)) {
       const { error } = res;
       throw new CognitoError(error);

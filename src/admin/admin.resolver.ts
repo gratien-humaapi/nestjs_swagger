@@ -11,7 +11,7 @@ import {
 import { GqlValidationPipe } from "src/common";
 import { GraphQLResolveInfo } from "graphql";
 import { Company, CompanyService, CreateCompanyInput } from "src/company";
-import { AdminCreateUserInput } from "./dto";
+import { AdminCreateUserInput, AdminSetUserPasswordInput } from "./dto";
 import { AdminService } from "./services";
 import { AuthUser } from "./entities";
 
@@ -48,6 +48,16 @@ export class AdminResolver {
   @Mutation(() => TempClass)
   adminDeleteUser(@Args("username") username: string) {
     return this._adminService.adminDeleteUser({ username });
+  }
+
+  @Mutation(() => TempClass)
+  adminConfirmSignUp(@Args("username") username: string) {
+    return this._adminService.adminConfirmSignUp({ username });
+  }
+
+  @Mutation(() => TempClass)
+  adminSetUserPassword(@Args("input") input: AdminSetUserPasswordInput) {
+    return this._adminService.adminSetUserPassword(input);
   }
 
   // // // -------------------------------------------------------------------------

@@ -65,13 +65,12 @@ export class CognitoService {
         ...rest
       });
 
-      // console.log(resCamelCase);
-
       const data = {
         ...resCamelCase,
         authenticationResult: {
           accessToken: authenticationResult?.idToken,
-          expiresIn: authenticationResult?.expiresIn,
+          accessTokenExpiresIn: authenticationResult?.expiresIn,
+          tokenType: authenticationResult?.tokenType,
           refreshToken: authenticationResult?.refreshToken
         }
       };
@@ -110,7 +109,8 @@ export class CognitoService {
         ...resCamelCase,
         authenticationResult: {
           accessToken: authenticationResult?.idToken,
-          expiresIn: authenticationResult?.expiresIn,
+          accessTokenExpiresIn: authenticationResult?.expiresIn,
+          tokenType: authenticationResult?.tokenType,
           refreshToken: authenticationResult?.refreshToken
         }
       };
@@ -164,7 +164,6 @@ export class CognitoService {
     params: ICognitoService["confirmForgotPassword"]
   ) => {
     const { username, confirmationCode, newPassword } = params;
-    console.log(confirmationCode);
 
     try {
       const cognitoParams = {
@@ -228,8 +227,12 @@ export class CognitoService {
         ...rest
       });
       const { authenticationResult } = resCamelCase;
-      const data = { ...authenticationResult };
-      // const data = { done: false };
+      const data = {
+        accessToken: authenticationResult?.idToken,
+        accessTokenExpiresIn: authenticationResult?.expiresIn,
+        tokenType: authenticationResult?.tokenType
+      };
+
       return response(data);
     } catch (err) {
       return errorResponse(<CognitoErrorType>err);

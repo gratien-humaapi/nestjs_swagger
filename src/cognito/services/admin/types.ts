@@ -49,8 +49,12 @@ type AdminCreateUserParamsCamelCase = Omit<
   "messageAction"
 > & { sendPassword: boolean };
 
-type AdminCreateUserNormalizedParams = AdminCreateUserParamsCamelCase & {
+type AdminCreateUserNormalizedParams = Omit<
+  AdminCreateUserParamsCamelCase,
+  "desiredDeliveryMediums"
+> & {
   attributes: AttributeCognitoNormalizedType[];
+  desiredDeliveryMediums?: string[];
 };
 
 // ### Create User type  ###  End
@@ -90,6 +94,27 @@ type AdminGetUserParamsCamelCase = ReturnType<
 type AdminGetUserNormalizedParams = AdminGetUserParamsCamelCase;
 
 // ### Get User type  ###  End
+
+// ### Confirm user signUP  ###  Start
+type AdminConfirmSignUpParams = Omit<
+  Parameters<CognitoClientType["adminConfirmSignUp"]>[0],
+  "UserPoolId"
+>;
+
+const adminConfirmSignUpParamsCamelCase = (
+  params: DeepNonNullable<AdminConfirmSignUpParams>
+) => camelCase(params);
+
+type AdminConfirmSignUpParamsCamelCase = ReturnType<
+  typeof adminConfirmSignUpParamsCamelCase
+>;
+
+type AdminConfirmSignUpNormalizedParams = Omit<
+  AdminConfirmSignUpParamsCamelCase,
+  "clientMetadata"
+>;
+
+// ### Confirm user signUP   ###  End
 
 // ### Create Add User to Group  ###  Start
 type AdminAddUserToGroup = Omit<
@@ -211,6 +236,7 @@ export interface IAdminService {
   adminCreateUserParams: AdminCreateUserNormalizedParams;
   adminDeleteUserParams: AdminDeleteUserNormalizedParams;
   adminGetUserParams: AdminGetUserNormalizedParams;
+  adminConfirmSignUpParams: AdminConfirmSignUpNormalizedParams;
   adminAddUsertoGroupParams: AdminAddUserToGroupNormalizedParams;
   adminRemoveUserFromGroupParams: AdminAddUserToGroupNormalizedParams;
   adminListGroupsForUserParams: AdminListGroupsForUserNormalizedParams;

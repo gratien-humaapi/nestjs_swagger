@@ -51,7 +51,6 @@ export class CognitoAdminService {
       MessageAction: params.sendPassword ? undefined : "SUPPRESS",
       TemporaryPassword: params.temporaryPassword
     };
-    console.log(cognitoParams);
     try {
       const { $metadata, ...rest } = await this._client.adminCreateUser(
         cognitoParams
@@ -128,9 +127,24 @@ export class CognitoAdminService {
         attributes,
         username
       };
+      return response(data);
+    } catch (err) {
+      return errorResponse(<CognitoErrorType>err);
+    }
+  };
 
-      console.log(data);
-
+  adminConfirmSignUp = async (
+    params: IAdminService["adminConfirmSignUpParams"]
+  ) => {
+    const cognitoParams = {
+      UserPoolId: this._userPoolID,
+      Username: params.username
+    };
+    try {
+      const { $metadata, ...rest } = await this._client.adminConfirmSignUp(
+        cognitoParams
+      );
+      const data = { done: true };
       return response(data);
     } catch (err) {
       return errorResponse(<CognitoErrorType>err);

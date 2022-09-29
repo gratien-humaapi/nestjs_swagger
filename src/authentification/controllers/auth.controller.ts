@@ -50,8 +50,8 @@ export class AuthController {
   @Post("global-sign-out")
   @UseInterceptors(RefreshTokenRevokeInterceptor)
   async globalSignOut(@Headers("Authorization") accessToken: string) {
-    await this._authService.globalSignOut(accessToken);
-    return undefined;
+    const res = await this._authService.globalSignOut(accessToken);
+    return res;
   }
 
   @Public()
@@ -67,8 +67,8 @@ export class AuthController {
   async confirmForgotPassword(
     @Body() data: ICognitoService["confirmForgotPassword"]
   ) {
-    await this._authService.confirmForgotPassword(data);
-    return undefined;
+    const res = await this._authService.confirmForgotPassword(data);
+    return res;
   }
 
   @Post("verify-user-attribute")
@@ -77,8 +77,8 @@ export class AuthController {
     @Headers("Authorization") accessToken: string
   ) {
     const newData = { accessToken, ...data };
-    await this._authService.verifyUserAttribute(newData);
-    return undefined;
+    const res = await this._authService.verifyUserAttribute(newData);
+    return res;
   }
 
   @Post("get-user-attribute-verification-code")
