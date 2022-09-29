@@ -37,6 +37,13 @@ export class ErrorsInterceptor implements NestInterceptor {
             });
           case CognitoError:
             switch (error.name) {
+              case "NotAuthorizedException":
+                throw new GraphQLError(error.message, {
+                  extensions: {
+                    code: GQLErrorCode.CUSTOM_BAD_REQUEST
+                  }
+                });
+
               case "InvalidParameterException":
                 throw new GraphQLError(error.message, {
                   extensions: {
@@ -48,6 +55,13 @@ export class ErrorsInterceptor implements NestInterceptor {
                 throw new GraphQLError(error.message, {
                   extensions: {
                     code: GQLErrorCode.CUSTOM_NOT_FOUND
+                  }
+                });
+
+              case "UsernameExistsException":
+                throw new GraphQLError(error.message, {
+                  extensions: {
+                    code: GQLErrorCode.CUSTOM_BAD_REQUEST
                   }
                 });
 
