@@ -12,7 +12,7 @@ import { GqlValidationPipe, CurrentUser, Public } from "src/common";
 import { ValidationPipe } from "@nestjs/common/pipes";
 import { GraphQLResolveInfo } from "graphql/type";
 import { ICurrentUser } from "src/authentification";
-import { UseGuards } from "@nestjs/common";
+import { UseGuards, UsePipes } from "@nestjs/common";
 import { GraphQLUUID } from "graphql-scalars";
 import { StudentService } from "./student.service";
 import { Student } from "./entities/student.entity";
@@ -27,7 +27,7 @@ import { PartialStudent } from "./entities/student.entity copy";
 //   Private = "PRIVATE"
 // }
 
-// @UseGuards(GraphqlJwtAuthGuard)
+@UsePipes(GqlValidationPipe)
 @Resolver(() => Student)
 export class StudentResolver {
   constructor(private readonly studentService: StudentService) {}

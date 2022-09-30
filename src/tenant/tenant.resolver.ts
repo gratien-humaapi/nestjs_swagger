@@ -1,12 +1,13 @@
 import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { CurrentUser, GqlValidationPipe } from "src/common";
-import { ICurrentUser } from "src/authentification";
 import { GraphQLUUID } from "graphql-scalars";
+import { UsePipes } from "@nestjs/common";
 import { TenantService } from "./tenant.service";
 import { Tenant } from "./entities/tenant.entity";
 import { CreateTenantInput } from "./dto/create-tenant.input";
 import { UpdateTenantInput } from "./dto/update-tenant.input";
 
+@UsePipes(GqlValidationPipe)
 @Resolver(() => Tenant)
 export class TenantResolver {
   constructor(private readonly tenantService: TenantService) {}

@@ -8,11 +8,13 @@ import { GraphQLUUID } from "graphql-scalars";
 import { Tenant } from "src/tenant";
 import { GraphQLResolveInfo } from "graphql";
 import { AutoPath } from "@mikro-orm/core/typings";
+import { UsePipes } from "@nestjs/common";
 import { CompanyService } from "./company.service";
 import { Company } from "./entities/company.entity";
 import { CreateCompanyInput } from "./dto/create-company.input";
 import { UpdateCompanyInput } from "./dto/update-company.input";
 
+@UsePipes(GqlValidationPipe)
 @Resolver(() => Company)
 export class CompanyResolver {
   constructor(private readonly companyService: CompanyService) {}
