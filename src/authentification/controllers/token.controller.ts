@@ -1,15 +1,23 @@
-import { Body, Controller, Post, Req, ValidationPipe } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UsePipes,
+  ValidationPipe
+} from "@nestjs/common";
 import { Request } from "express";
 import { Cookie, Public } from "src/common";
 import { RefreshTokenDTO } from "../dto";
 import { AuthService } from "../services";
 
+// @UsePipes(ValidationPipe)
 @Controller("token")
 export class TokenController {
   constructor(private _authService: AuthService) {}
   @Post("revoke")
   async revoke(@Req() req: Request) {
-    const refreshToken = req.cookies[Cookie.refresh_token];
+    const refreshToken = req.cookies[Cookie.REFRESH_TOKEN];
     if (refreshToken) {
       await this._authService.revokeRefreshToken(refreshToken);
     }
@@ -18,14 +26,17 @@ export class TokenController {
 
   @Post("web-refresh-tokens")
   @Public()
-  async webRefresh(@Req() req: Request, @Body("sub") sub: string) {
-    const refreshToken = req.cookies[Cookie.refresh_token] as
+  async webRefresh(@Req() req: Request) {
+    const refreshToken = req.cookies[Cookie.REFRESH_TOKEN] as
       | string
       | undefined;
 
-    if (!refreshToken) {
+    const sub = req.cookies[Cookie.USER_ID] as string | undefined;
+
+    if (!refreshToken || !sub) {
       return undefined;
     }
+
     const res = await this._authService.refreshAccessAndIDToken({
       refreshToken,
       sub
@@ -36,7 +47,7 @@ export class TokenController {
 
   @Post("refresh-tokens")
   @Public()
-  async refresh(@Body(new ValidationPipe()) params: RefreshTokenDTO) {
+  async refresh(@Body() params: RefreshTokenDTO) {
     const { refreshToken, sub } = params;
     if (!refreshToken) {
       return undefined;

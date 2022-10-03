@@ -15,7 +15,7 @@ export class RefreshTokenRevokeInterceptor implements NestInterceptor {
     const res: Response = context.switchToHttp().getResponse();
     return next.handle().pipe(
       tap(() =>
-        res.clearCookie(Cookie.refresh_token, {
+        res.clearCookie(Cookie.REFRESH_TOKEN, {
           path: "/token",
           secure: true,
           httpOnly: true

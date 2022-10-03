@@ -1,3 +1,7 @@
 export enum Cookie {
-  refresh_token = "rf_tk"
+  REFRESH_TOKEN = "rf_tk",
+  /**
+   * User cookie id related to user auth ID
+   */
+  USER_ID = "uid"
 }

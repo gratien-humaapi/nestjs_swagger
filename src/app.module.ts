@@ -46,8 +46,8 @@ import { AuthorizationModule } from "./authorization/authorization.module";
                 // [responseCachePlugin()]
               ],
         bodyParserConfig: false, // BodyParser should run _before_ MikroOrm middleware
-        // origin: ["https://www.your-app.example"],
-        csrfPrevention: true
+        cors: true
+        // csrfPrevention: true
       })
 
       // autoSchemaFile: true
@@ -71,10 +71,6 @@ import { AuthorizationModule } from "./authorization/authorization.module";
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsInterceptor
-    },
-    {
-      provide: APP_PIPE,
-      useClass: GqlValidationPipe
     }
   ],
   controllers: [AppController]

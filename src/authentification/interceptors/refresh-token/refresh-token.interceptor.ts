@@ -7,6 +7,7 @@ import {
 import { Observable, tap } from "rxjs";
 import { Response } from "express";
 import { Cookie } from "src/common";
+import { parseJwt } from "src/authentification";
 import { AuthService } from "../../services";
 
 type SignInResponse = Awaited<ReturnType<AuthService["signIn"]>>;
@@ -17,18 +18,34 @@ export class RefreshTokenInterceptor implements NestInterceptor {
     next: CallHandler<SignInResponse>
   ): Observable<SignInResponse> {
     const res: Response = context.switchToHttp().getResponse();
+    let sub = "";
 
     return next.handle().pipe(
       tap((data) => {
         const { authenticationResult } = data;
         if (authenticationResult) {
-          const { refreshToken } = authenticationResult;
-          return res.cookie(Cookie.refresh_token, refreshToken, {
-            path: "/token",
-            secure: true,
-            httpOnly: true,
-            expires: new Date(Date.now() + 90000)
-          });
+          const { refreshToken, accessToken } = authenticationResult;
+          if (accessToken) {
+            sub = parseJwt(accessToken).sub;
+          }
+          //
+          return res
+            .cookie(Cookie.REFRESH_TOKEN, refreshToken, {
+              path: "/token/web-refresh-tokens",
+              secure: true,
+              httpOnly: true,
+              expires: new Date(Date.now() + 90000),
+              // expires: new Date(Date.now() + 36000000),
+              sameSite: "strict" // work only starting form 2019 browsers
+            })
+            .cookie(Cookie.USER_ID, sub, {
+              path: "/token/web-refresh-tokens",
+              secure: true,
+              httpOnly: false,
+              expires: new Date(Date.now() + 90000),
+              // expires: new Date(Date.now() + 36000000),
+              sameSite: "strict" // work only starting form 2019 browsers
+            });
         }
         return undefined;
       })

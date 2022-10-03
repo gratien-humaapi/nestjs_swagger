@@ -15,7 +15,9 @@ async function bootstrap() {
    * or use   body-parser @see https://www.npmjs.com/package/body-parser#bodyparserrawoptions
    */
   app.use(express.json());
-  app.enableCors();
+  // https://stackoverflow.com/a/66769957
+  // https://www.apollographql.com/docs/react/networking/authentication/#cookie
+  app.enableCors({ origin: "http://localhost:3000", credentials: true });
   app.use(cookieParser()); // Parse the `/token` refresh cookie
   /**
    * @see https://docs.nestjs.com/security/helmet#use-with-fastify
