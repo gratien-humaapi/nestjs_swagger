@@ -1,5 +1,4 @@
 import { INestApplication } from "@nestjs/common";
-import request = require("supertest");
 import { sessionFactory } from "./services";
 import { GraphqlClient } from "./services/graphql-client";
 import { ApolloSdk, createTestingModule, errorResponse } from "./utils";

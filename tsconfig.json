@@ -26,6 +26,8 @@
     "noFallthroughCasesInSwitch": false,
   },
   "include": [
-    "src/**/*", "test/**/*"
+    "src/**/*",
+    "test/**/*.ts",
+    "scripts/**/*.ts"
   ],
 }

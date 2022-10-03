@@ -1,6 +1,9 @@
 overwrite: true
 schema: "./graphql/schema.graphql"
 documents: "./graphql/**/*.{graphql,gql}"
+config:
+  namingConvention:
+    enumValues: "change-case-all#upperCase"
 generates:
   test/API.ts:
     plugins:
@@ -10,9 +13,9 @@ generates:
       - add:
           content:
             - "/* eslint-disable */"
-            - '/**'
-            - ' * NOTE: THIS IS AN AUTO-GENERATED FILE. DO NOT MODIFY DIRECTLY.'
-            - ' */'
+            - "/**"
+            - " * NOTE: THIS IS AN AUTO-GENERATED FILE. DO NOT MODIFY DIRECTLY."
+            - " */"
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 #
 # test/operations-types.ts:
