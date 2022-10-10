@@ -16,9 +16,9 @@ export class HMAuthSDKError extends Error {
     ...params: any[]
   ) {
     super(...params);
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, HMAuthSDKError);
-    }
+    // if (Error.captureStackTrace) {
+    //   Error.captureStackTrace(this, HMAuthSDKError);
+    // }
 
     this.message = errObj.message ? errObj.message : "";
     this.name = errObj.name ? errObj.name : "UnknowError";
@@ -150,11 +150,13 @@ export class HMAuthSDK {
     this._url = url;
   }
 
-  getAccessToken = async (isWeb = true) => {
-    if (this._accessToken) return this._accessToken;
-    const res = await this.refreshToken(isWeb);
-    return res?.accessToken;
-  };
+  set accessToken(data: string) {
+    this._accessToken = data;
+  }
+
+  get accessToken() {
+    return this._accessToken;
+  }
 
   private _resetValues = () => {
     this._refreshToken = "";
@@ -164,6 +166,7 @@ export class HMAuthSDK {
     this.groups = [];
     this.sessionflow = "";
     this.sub = "";
+    this._clearUIDInLocalStorage();
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -210,12 +213,31 @@ export class HMAuthSDK {
        * @see https://stackoverflow.com/a/61113372
        */
       const error = <any>err;
-      if (error.constructor instanceof HMAuthSDKError) {
+
+      if (error instanceof HMAuthSDKError) {
         throw error;
       }
 
       throw new Error("network error, please try again");
     }
+  };
+
+  private _deleteCookie = (name: string, path: string) => {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
+  };
+
+  private _setUIDInLocalStorage = () => {
+    if (!window) {
+      return;
+    }
+    window.localStorage.setItem("uid", this.sub);
+  };
+
+  private _clearUIDInLocalStorage = () => {
+    if (!window) {
+      return;
+    }
+    window.localStorage.removeItem("uid");
   };
 
   // https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
@@ -238,6 +260,7 @@ export class HMAuthSDK {
     this.sub = parsedJwt.sub;
     this.groups = parsedJwt["cognito:groups"];
     this.admin = parsedJwt["custom:admin"] === "true";
+    this._setUIDInLocalStorage();
 
     return parsedJwt;
   };
@@ -267,68 +290,52 @@ export class HMAuthSDK {
   };
 
   newPasswordRequired = async (params: IHMAuthSDK["newPasswordRequired"]) => {
-    try {
-      if (!this.sessionflow) {
-        throw new Error("session is invalid, please sign-in again");
-      }
-      const data = { ...params, session: this.sessionflow };
-      const res = await this._client<IAuthenticationResult>({
-        path: "auth/new-password-required",
-        data
-      });
-
-      if (
-        res &&
-        res.authenticationResult &&
-        res.authenticationResult.refreshToken
-      ) {
-        this.parseJwt(res.authenticationResult.accessToken);
-        this._refreshToken = res.authenticationResult.refreshToken;
-      }
-
-      return res;
-    } catch (err) {
-      const error = <any>err;
-      throw new Error(error.message);
+    if (!this.sessionflow) {
+      throw new Error("session is invalid, please sign-in again");
     }
+    const data = { ...params, session: this.sessionflow };
+    const res = await this._client<IAuthenticationResult>({
+      path: "auth/new-password-required",
+      data
+    });
+
+    if (
+      res &&
+      res.authenticationResult &&
+      res.authenticationResult.refreshToken
+    ) {
+      this.parseJwt(res.authenticationResult.accessToken);
+      this._refreshToken = res.authenticationResult.refreshToken;
+    }
+
+    return res;
   };
 
   forgotPassword = async (username: string) => {
-    try {
-      const data = { username };
-      const res = await this._client<IHMAuthSDK["forgotPasswordReturnType"]>({
-        path: "auth/forgot-password",
-        data
-      });
+    const data = { username };
+    const res = await this._client<IHMAuthSDK["forgotPasswordReturnType"]>({
+      path: "auth/forgot-password",
+      data
+    });
 
-      return res;
-    } catch (err) {
-      const error = <any>err;
-      throw new Error(error.message);
-    }
+    return res;
   };
 
   confirmForgotPassword = async (
     data: IHMAuthSDK["confirmForgotPasswordParams"]
   ) => {
-    try {
-      const res = await this._client<{ done: boolean }>({
-        path: "auth/confirm-forgot-password",
-        data
-      });
-      return res;
-    } catch (err) {
-      const error = <any>err;
-      throw new Error(error.message);
-    }
+    const res = await this._client<{ done: boolean }>({
+      path: "auth/confirm-forgot-password",
+      data
+    });
+    return res;
   };
 
   signOut = async () => {
     try {
       this._deleteCookie("uid", "/token/web-refresh-tokens");
-      await this._client({ path: "auth/sign-out", withAuthHeader: true });
-
       this._resetValues();
+      await this._client({ path: "auth/sign-out", withAuthHeader: true });
       return true;
     } catch (err) {
       const error = <any>err;
@@ -336,10 +343,6 @@ export class HMAuthSDK {
     } finally {
       return true;
     }
-  };
-
-  private _deleteCookie = (name: string, path: string) => {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
   };
 
   refreshToken = async (isWeb = true) => {
@@ -351,26 +354,40 @@ export class HMAuthSDK {
       | undefined;
     const web = isWeb ? "web-" : "";
     const { sub, _refreshToken } = this;
-    const data = {
-      sub,
+    const body = {
+      sub: web ? undefined : sub,
       refreshToken: web ? undefined : _refreshToken
     };
     try {
       const res = await this._client<ResType>({
         path: `token/${web}refresh-tokens`,
-        data,
+        data: body,
         withCredentials: isWeb
       });
       if (!res) {
         this._resetValues();
       }
+      this._accessToken = res!.accessToken;
+      this.parseJwt(this._accessToken);
+      const data = { ...res };
 
-      return res;
+      return this._response(data);
     } catch (err) {
-      const error = <any>err;
-      throw new Error(error.message);
+      const error = <HMAuthSDKError>err;
+      return this._errorResponse(error);
     }
   };
+
+  private _errorResponse = <T>(error: T) =>
+    //   const err = errorParser(error);
+    ({
+      data: undefined,
+      error
+    });
+  private _response = <T>(data: T) => ({
+    data,
+    error: undefined
+  });
 }
 
 // eslint-disable-next-line consistent-return
