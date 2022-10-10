@@ -1,9 +1,17 @@
-.env
 test.js
+test.ts
+/temp
+/graphql
+test/API.ts
+myTest.ts
 
 # compiled output
 /dist
 /node_modules
+
+# env
+.env
+docker.env
 
 # Logs
 logs

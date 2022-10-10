@@ -1,7 +1,13 @@
 {
+  "ts-node": {
+    // Do not forget to `npm i -D tsconfig-paths`
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  },
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": true,
+    "declaration": true, // it clash with package inference
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -12,10 +18,16 @@
     "baseUrl": ".",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
+    "esModuleInterop": true, // required for camelCase
+    "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*.ts",
+    "scripts/**/*.ts"
+  ],
 }

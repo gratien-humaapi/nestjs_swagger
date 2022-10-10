@@ -1,0 +1,31 @@
+overwrite: true
+schema: "./graphql/schema.graphql"
+documents: "./graphql/**/*.{graphql,gql}"
+config:
+  namingConvention:
+    enumValues: "change-case-all#upperCase"
+generates:
+  test/API.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-generic-sdk"
+      - add:
+          content:
+            - "/* eslint-disable */"
+            - "/**"
+            - " * NOTE: THIS IS AN AUTO-GENERATED FILE. DO NOT MODIFY DIRECTLY."
+            - " */"
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+#
+# test/operations-types.ts:
+#   documents:
+#     - "./graphql/**/*.{graphql,gql}"
+#   plugins:
+#     - "typescript-operations"
+#     - "typescript-generic-sdk"
+#     - add:
+#         content: "/* eslint-disable */"
+# ./graphql.schema.json:
+#   plugins:
+#     - "introspection"

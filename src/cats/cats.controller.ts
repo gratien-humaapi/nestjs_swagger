@@ -18,7 +18,6 @@ import {
 import { CatsService } from "./cats.service";
 import { CreateCatDto } from "./dto/create-cat.dto";
 import { Cat } from "./cat.interface";
-import { HttpExceptionFilter } from "./http-exception.filter";
 import { ValidationPipe } from "./validation.pipe";
 import { RolesGuard } from "./roles.guard";
 import { Roles } from "./roles.decorator";
