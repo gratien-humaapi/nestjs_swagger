@@ -3,7 +3,6 @@ import { Reflector } from "@nestjs/core";
 import { ExecutionContextHost } from "@nestjs/core/helpers/execution-context-host";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
-import { AuthenticationError } from "apollo-server-errors";
 import { CustomContextType } from "../types";
 import { IS_PUBLIC_KEY } from "../decorators";
 

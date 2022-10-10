@@ -1,17 +1,25 @@
+// import { UnauthorizedException } from "@aws-sdk/client-cognito-identity-provider";
 import {
   Body,
   Controller,
   Post,
   Req,
+  UnauthorizedException,
+  UseFilters,
   UsePipes,
   ValidationPipe
 } from "@nestjs/common";
 import { Request } from "express";
-import { Cookie, Public } from "src/common";
+import {
+  AuthClienExceptionFilter,
+  Cookie,
+  HttpExceptionFilter,
+  Public
+} from "src/common";
 import { RefreshTokenDTO } from "../dto";
 import { AuthService } from "../services";
 
-// @UsePipes(ValidationPipe)
+@UseFilters(HttpExceptionFilter, AuthClienExceptionFilter)
 @Controller("token")
 export class TokenController {
   constructor(private _authService: AuthService) {}
@@ -33,8 +41,10 @@ export class TokenController {
 
     const sub = req.cookies[Cookie.USER_ID] as string | undefined;
 
+    console.log({ refreshToken, sub });
+
     if (!refreshToken || !sub) {
-      return undefined;
+      throw new UnauthorizedException();
     }
 
     const res = await this._authService.refreshAccessAndIDToken({

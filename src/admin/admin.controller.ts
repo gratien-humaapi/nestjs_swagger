@@ -11,7 +11,6 @@ import { JwtAuthGuard } from "src/common";
 // import { AdminCreateUserDto } from "./dto";
 import { AdminService } from "./services";
 
-@UseGuards(JwtAuthGuard)
 @Controller("admin")
 export class AdminController {
   constructor(private _adminService: AdminService) {}

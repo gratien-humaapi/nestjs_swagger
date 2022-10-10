@@ -34,16 +34,16 @@ export class RefreshTokenInterceptor implements NestInterceptor {
               path: "/token/web-refresh-tokens",
               secure: true,
               httpOnly: true,
-              expires: new Date(Date.now() + 90000),
-              // expires: new Date(Date.now() + 36000000),
+              // expires: new Date(Date.now() + 90000),
+              expires: new Date(Date.now() + 360000000),
               sameSite: "strict" // work only starting form 2019 browsers
             })
             .cookie(Cookie.USER_ID, sub, {
               path: "/token/web-refresh-tokens",
               secure: true,
               httpOnly: false,
-              expires: new Date(Date.now() + 90000),
-              // expires: new Date(Date.now() + 36000000),
+              // expires: new Date(Date.now() + 90000),
+              expires: new Date(Date.now() + 360000000),
               sameSite: "strict" // work only starting form 2019 browsers
             });
         }
