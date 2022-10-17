@@ -39,7 +39,8 @@ export class RefreshTokenInterceptor implements NestInterceptor {
               sameSite: "strict" // work only starting form 2019 browsers
             })
             .cookie(Cookie.USER_ID, sub, {
-              path: "/token/web-refresh-tokens",
+              // path is set to "/" in order to let the client sdk to retrieve the value
+              path: "/",
               secure: true,
               httpOnly: false,
               // expires: new Date(Date.now() + 90000),
