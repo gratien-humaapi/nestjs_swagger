@@ -47,8 +47,12 @@ export class CompanyService {
 
   async update(input: UpdateCompanyInput) {
     const { id, ...rest } = input;
+    console.log(input);
 
-    const company = await this.companyRepository.findOneOrFail({ id });
+    const company = await this.companyRepository.findOneOrFail(
+      { id },
+      { populate: ["currency"] }
+    );
 
     this.companyRepository.assign(company, rest);
     await this.companyRepository.flush();

@@ -85,7 +85,7 @@ export class Company extends CustomBaseEntity<
     onCreate: (e: Company) => (e.headOffice ? e.headOffice : e.id)
   })
   @HideField()
-  @IsUUID()
+  // @IsUUID()
   companyId: string;
 
   // @Property({ onCreate: (e: Company) => e.id })
