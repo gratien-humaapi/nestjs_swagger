@@ -46,6 +46,11 @@ export class CurrencyResolver {
     return this.currencyService.findAll({ owner, tenant });
   }
 
+  @Query(() => [Currency], { name: "currenciesByCode" })
+  findAllByCode(@Args("code") code: string) {
+    return this.currencyService.findAllByCode(code);
+  }
+
   @Query(() => Currency, { name: "currency" })
   findOne(@Args("id", { type: () => Int }) id: string) {
     return this.currencyService.findOne(id);

@@ -19,6 +19,7 @@ import { TenantModule } from "./tenant/tenant.module";
 import { CompanyModule } from "./company/company.module";
 import { UserModule } from "./user/user.module";
 import { AuthorizationModule } from "./authorization/authorization.module";
+import { IndustryModule } from "./industry/industry.module";
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { AuthorizationModule } from "./authorization/authorization.module";
     TenantModule,
     CompanyModule,
     UserModule,
+    IndustryModule,
     AuthorizationModule
     // DatabaseModule
     // PostsModule

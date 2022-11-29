@@ -60,7 +60,10 @@ export class CompanyService {
   }
 
   async remove(id: string) {
-    const company = await this.companyRepository.findOneOrFail({ id });
+    const company = await this.companyRepository.findOneOrFail(
+      { id },
+      { populate: ["currency"] }
+    );
     await this.companyRepository.removeAndFlush(company);
 
     return company;
@@ -81,7 +84,7 @@ export class CompanyService {
     const { name, populate } = params;
     const companies = await this.companyRepository.find(
       {
-        name: { $like: `${name}%` }
+        name: { $ilike: `%${name}%` }
       },
       { populate }
     );

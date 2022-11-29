@@ -48,7 +48,7 @@ export class Company extends CustomBaseEntity<
 
   @Property()
   @Unique()
-  @Index({ type: "fulltext" })
+  @Index()
   name: string;
 
   @Property()

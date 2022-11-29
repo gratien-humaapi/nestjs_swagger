@@ -24,6 +24,15 @@ const MikroOrmConfig: Options = {
     path: "dist/migrations",
     pathTs: "src/migrations",
     snapshot: false // change to "true" after dev iteration
+  },
+  // seeder
+  seeder: {
+    path: "src/seeder",
+    // pathTs: "./seeder",
+    // defaultSeeder: "DatabaseSeeder",
+    glob: "*.{js,ts}",
+    emit: "ts",
+    fileName: (className: string) => className
   }
 };
 
