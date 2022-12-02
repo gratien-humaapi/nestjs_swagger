@@ -33,13 +33,22 @@ export class CurrencyService {
         //   filters: { currentUser }
         // }
       );
-      // eslint-disable-next-line max-len
 
       return currencies;
     } catch (error) {
       console.log({ ...error, message: error.message });
       throw new ApolloError("operation failed");
     }
+  }
+
+  /**
+   * Get Currency by code
+   */
+  async findAllByCode(code: string) {
+    const currencies = await this.currencyRepository.find({
+      code: { $ilike: `%${code}%` }
+    });
+    return currencies;
   }
 
   /**
