@@ -1,9 +1,15 @@
 ## ORM
 
-- update schema to latest without migration :
+- update schema to latest and create all table without migration step :
 
 ```bash
 $ npx mikro-orm schema:fresh --run 
+```
+
+- update schema to latest and create all table without migration step + seeder:
+
+```bash
+$ npx mikro-orm schema:fresh --run --seed
 ```
 
 ## Installation

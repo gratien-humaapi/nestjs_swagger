@@ -42,8 +42,8 @@ export class CurrencyResolver {
 
   @Query(() => [Currency], { name: "currencies" })
   findAll(@CurrentUser() currentUser: ICurrentUser) {
-    const { owner, tenant } = currentUser;
-    return this.currencyService.findAll({ owner, tenant });
+    const { owner, tenant, role } = currentUser;
+    return this.currencyService.findAll({ owner, tenant, role });
   }
 
   @Query(() => [Currency], { name: "currenciesByCode" })
