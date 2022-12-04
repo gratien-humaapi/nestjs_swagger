@@ -1,9 +1,10 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { Entity, Property, Enum, ManyToOne } from "@mikro-orm/core";
+import { Embedded, Entity, Enum, Property } from "@mikro-orm/core";
 import { ObjectType } from "@nestjs/graphql";
 import { MaxLength, ValidateIf } from "class-validator";
 import { BaseEntityWithTUC, UTC } from "../../common";
+import { AuthData } from "../embedded";
 import { OnlineStatusEnum, UserStatusEnum, UserTypeEnum } from "../enums";
 import { UserRepository } from "../user.repository";
 
@@ -52,4 +53,10 @@ export class User extends BaseEntityWithTUC<
   @Property()
   @MaxLength(256)
   description: string = "";
+
+  // @Embedded(() => AuthAttribute, { object: true })
+  // authAttribute: AuthAttribute;
+
+  @Embedded(() => AuthData, { object: true })
+  authData: AuthData;
 }

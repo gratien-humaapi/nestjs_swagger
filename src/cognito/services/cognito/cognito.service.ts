@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -5,6 +6,7 @@ import camelcaseKeys from "camelcase-keys";
 import { createHmac } from "crypto";
 import { errorResponse, response } from "src/common";
 // eslint-disable-next-line import/no-cycle
+import { ICurrentUser } from "src/authentification";
 import { CognitoErrorType } from "../../helpers";
 
 import { ICognitoConfig } from "../../cognito.config";
@@ -20,6 +22,7 @@ export class CognitoService {
   public clientId: string;
   private _clientSecret: string;
   public authority: string;
+  public currentUser: ICurrentUser;
   constructor(private configService: ConfigService) {
     const cognitoConfig =
       this.configService.get<ICognitoConfig>("cognitoConfig");

@@ -1,22 +1,25 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { InputType, ObjectType, OmitType, PickType } from "@nestjs/graphql";
 import {
-  IsString,
-  IsInt,
-  IsJSON,
-  IsArray,
-  IsEmail,
-  IsBoolean,
-  ValidateIf
-} from "class-validator";
-import { IAdminService } from "src/cognito";
+  InputType,
+  IntersectionType,
+  OmitType,
+  PickType
+} from "@nestjs/graphql";
+import { IsBoolean, IsString } from "class-validator";
+import { CreateUserInput } from "src/user/dto/create-user.input";
 import { AuthUser } from "../entities";
 
-@InputType()
-export class AdminCreateUserInput extends PickType(
+const userInput = OmitType(CreateUserInput, ["authData"]);
+const authInput = PickType(
   AuthUser,
   ["attributes", "username"] as const,
   InputType
+);
+
+@InputType()
+export class AdminCreateUserInput extends IntersectionType(
+  userInput,
+  authInput
 ) {
   @IsString()
   temporaryPassword: string;
