@@ -6,6 +6,7 @@ import { User } from "./entities/user.entity";
 
 @Module({
   imports: [MikroOrmModule.forFeature([User])],
-  providers: [UserResolver, UserService]
+  providers: [UserResolver, UserService],
+  exports: [UserService]
 })
 export class UserModule {}

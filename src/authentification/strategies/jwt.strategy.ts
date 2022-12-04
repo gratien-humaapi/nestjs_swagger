@@ -38,7 +38,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         owner: payload.sub,
         tenant: payload["custom:tenantId"]
       };
-
+      this._cognitoService.currentUser = currentUser;
       return currentUser;
     }
 

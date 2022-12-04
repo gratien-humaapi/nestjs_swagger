@@ -1,19 +1,19 @@
 /* eslint-disable max-classes-per-file */
 import {
-  Resolver,
-  Query,
-  Mutation,
   Args,
+  Field,
   Info,
+  Mutation,
   ObjectType,
-  Field
+  Query,
+  Resolver
 } from "@nestjs/graphql";
-import { GqlValidationPipe } from "src/common";
 import { GraphQLResolveInfo } from "graphql";
 import { Company, CompanyService, CreateCompanyInput } from "src/company";
+import { User } from "src/user/entities/user.entity";
 import { AdminCreateUserInput, AdminSetUserPasswordInput } from "./dto";
-import { AdminService } from "./services";
 import { AuthUser } from "./entities";
+import { AdminService } from "./services";
 
 @ObjectType()
 class TempClass {
@@ -40,7 +40,7 @@ export class AdminResolver {
     return this._companyService.create(input);
   }
 
-  @Mutation(() => AuthUser)
+  @Mutation(() => User)
   adminCreateUser(@Args("input") input: AdminCreateUserInput) {
     return this._adminService.adminCreateUser(input);
   }

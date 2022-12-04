@@ -1,16 +1,22 @@
 /* eslint-disable arrow-body-style */
 import { Injectable } from "@nestjs/common";
+import to from "await-to-js";
 import { CognitoError, CognitoAdminService, IAdminService } from "src/cognito";
 
 import { isResolved } from "src/common";
 import { CompanyService, CreateCompanyInput } from "src/company";
+import { AuthData } from "src/user";
+import { CreateUserInput } from "src/user/dto/create-user.input";
+import { User } from "src/user/entities/user.entity";
+import { UserService } from "src/user/user.service";
 import { AdminCreateUserInput } from "../dto";
 
 @Injectable()
 export class AdminService {
   constructor(
     private _cognitoAdminService: CognitoAdminService,
-    private _companyService: CompanyService
+    private _companyService: CompanyService,
+    private _userService: UserService
   ) {}
 
   adminCreateCompany = async (input: CreateCompanyInput) => {
@@ -18,8 +24,22 @@ export class AdminService {
   };
 
   adminCreateUser = async (params: AdminCreateUserInput) => {
-    const { temporaryPassword, permanent, username } = params;
-    const res = await this._cognitoAdminService.adminCreateUser(params);
+    const {
+      temporaryPassword,
+      permanent,
+      username,
+      sendPassword,
+      attributes,
+      desiredDeliveryMediums,
+      ...rest
+    } = params;
+    const cognitoData = {
+      temporaryPassword,
+      username,
+      sendPassword,
+      attributes
+    };
+    const res = await this._cognitoAdminService.adminCreateUser(cognitoData);
     if (!isResolved(res)) {
       const { error } = res;
       throw new CognitoError(error);
@@ -32,7 +52,38 @@ export class AdminService {
         username
       });
     }
-    return res.data;
+
+    const userGroup = await this.adminListGroupsForUser({
+      username,
+      limit: undefined,
+      nextToken: undefined
+    });
+    const {
+      data: { userCreateDate, userLastModifiedDate, ...otherData }
+    } = res;
+
+    const authData: CreateUserInput["authData"] = {
+      ...otherData,
+      userGroup
+    };
+    const userData: CreateUserInput = {
+      ...rest,
+      authData
+    };
+    const [err, user] = await to(
+      this._userService.create({
+        ...userData
+      })
+    );
+
+    if (err) {
+      console.log("ic");
+      this.adminDeleteUser({ username });
+      throw err;
+    }
+    console.log(user);
+
+    return user;
   };
 
   adminSetUserPassword = async (
@@ -111,5 +162,17 @@ export class AdminService {
     }
 
     return res.data;
+  };
+
+  adminListGroupsForUser = async (
+    params: IAdminService["adminListGroupsForUserParams"]
+  ) => {
+    const res = await this._cognitoAdminService.adminListGroupsForUser(params);
+    if (!isResolved(res)) {
+      const { error } = res;
+      throw new CognitoError(error);
+    }
+    const { groups } = res.data;
+    return groups;
   };
 }
