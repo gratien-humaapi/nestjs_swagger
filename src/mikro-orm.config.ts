@@ -27,8 +27,8 @@ const MikroOrmConfig: Options = {
   },
   // seeder
   seeder: {
-    path: "src/seeder",
-    // pathTs: "./seeder",
+    path: "dist/seeder",
+    pathTs: "src/seeder",
     // defaultSeeder: "DatabaseSeeder",
     glob: "*.{js,ts}",
     emit: "ts",

@@ -1,8 +1,6 @@
 import { EventArgs, EventSubscriber, wrap } from "@mikro-orm/core";
 import { EntityManager } from "@mikro-orm/postgresql";
-import { Inject, Injectable } from "@nestjs/common";
-import { REQUEST } from "@nestjs/core";
-import { Request } from "express";
+import { Injectable } from "@nestjs/common";
 import { CognitoService } from "src/cognito";
 
 @Injectable()
@@ -13,19 +11,24 @@ export class CurrentUserORMSuscriber<T> implements EventSubscriber<T> {
 
   async beforeCreate(args: EventArgs<any>) {
     console.log("beforeCreate called");
+    this._injectOwner(args);
+    // managedEntity.assign
+  }
+
+  private _injectOwner(args: EventArgs<any>) {
     const { em, entity } = args;
     const baseClass = wrap(entity, true).__meta.extends;
-    // console.log("ici", this._request);
+    if (baseClass.includes("BaseEntityWithTUC")) {
+      const { role, owner } = this._cognitoService.currentUser;
+      const ownerId = role === "admin" ? (entity.id as string) : owner;
+      console.log("in subscriber");
 
-    // console.log(baseClass);
-    console.log(this._cognitoService.currentUser);
-
-    // wrap(entity).assign(
-    //   {
-    //     tt: 466
-    //   },
-    //   { em }
-    // );
-    // managedEntity.assign
+      wrap(entity).assign(
+        {
+          ownerId
+        },
+        { em }
+      );
+    }
   }
 }

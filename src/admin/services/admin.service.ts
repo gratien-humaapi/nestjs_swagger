@@ -1,13 +1,11 @@
 /* eslint-disable arrow-body-style */
 import { Injectable } from "@nestjs/common";
 import to from "await-to-js";
-import { CognitoError, CognitoAdminService, IAdminService } from "src/cognito";
+import { CognitoAdminService, CognitoError, IAdminService } from "src/cognito";
 
 import { isResolved } from "src/common";
 import { CompanyService, CreateCompanyInput } from "src/company";
-import { AuthData } from "src/user";
 import { CreateUserInput } from "src/user/dto/create-user.input";
-import { User } from "src/user/entities/user.entity";
 import { UserService } from "src/user/user.service";
 import { AdminCreateUserInput } from "../dto";
 
@@ -77,11 +75,9 @@ export class AdminService {
     );
 
     if (err) {
-      console.log("ic");
       this.adminDeleteUser({ username });
       throw err;
     }
-    console.log(user);
 
     return user;
   };

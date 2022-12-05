@@ -9,7 +9,7 @@ import { UpdateCurrencyInput } from "./dto/update-currency.input";
 export class CurrencyService {
   constructor(private readonly currencyRepository: CurrencyRepository) {}
 
-  async create(input: WithCurrentUser<CreateCurrencyInput>) {
+  async create(input: Omit<WithCurrentUser<CreateCurrencyInput>, "role">) {
     try {
       const currency = this.currencyRepository.create({
         ...input
