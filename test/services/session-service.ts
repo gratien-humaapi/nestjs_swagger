@@ -17,9 +17,10 @@ export const sessionFactory = async (params: ISessionService) => {
   const { url, authParams } = params;
   const auth = authService({ url, fetch });
   const res = await auth.signIn({ ...authParams });
+  console.log(res);
 
   // Apollo
-  const accessToken = res.authenticationResult?.accessToken;
+  const accessToken = res?.authenticationResult?.accessToken;
   const authLink = setContext((_, { headers }) => ({
     headers: {
       ...headers,

@@ -11,7 +11,8 @@ export class UpdateCompanyInput extends OmitType(
     "currency",
     "headOffice",
     "headOfficeName",
-    "isGroup"
+    "isGroup",
+    "tenant"
 
     // "modifiedBy",
     // "tenantId",

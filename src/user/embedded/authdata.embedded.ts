@@ -14,7 +14,7 @@ export class AuthData {
   @Property()
   username: string;
 
-  //   @Embedded(() => AuthAttribute, { object: true })
+  @Embedded(() => AuthAttribute, { object: true })
   //   @Field(() => [AuthAttribute])
   attributes: AuthAttribute[];
 

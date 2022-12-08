@@ -31,7 +31,7 @@ export class User extends BaseEntityWithTUC<
   @Enum()
   onlineStatus: OnlineStatusEnum = OnlineStatusEnum.OFFLINE;
 
-  @ValidateIf((e: User) => UTC.has(e.timeZone))
+  @Property()
   timeZone: string;
 
   @Property()

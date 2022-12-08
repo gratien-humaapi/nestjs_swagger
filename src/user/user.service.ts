@@ -14,6 +14,7 @@ export class UserService {
 
     // eslint-disable-next-line max-len
     await this.userRepository.persistAndFlush(user);
+    console.log({ user });
     return user;
   }
 
