@@ -93,7 +93,7 @@ export class Company extends CustomBaseEntity<
   // @IsUUID()
   // tenantId: string;
 
-  // @ManyToOne()
-  // @HideField()
-  // tenant: Tenant;
+  @ManyToOne()
+  @HideField()
+  tenant: Tenant;
 }

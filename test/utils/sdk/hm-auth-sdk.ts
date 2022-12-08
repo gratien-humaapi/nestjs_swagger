@@ -166,7 +166,7 @@ export class HMAuthSDK {
     this.groups = [];
     this.sessionflow = "";
     this.sub = "";
-    this._clearUIDInLocalStorage();
+    // this._clearUIDInLocalStorage();
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -260,7 +260,7 @@ export class HMAuthSDK {
     this.sub = parsedJwt.sub;
     this.groups = parsedJwt["cognito:groups"];
     this.admin = parsedJwt["custom:admin"] === "true";
-    this._setUIDInLocalStorage();
+    // this._setUIDInLocalStorage();
 
     return parsedJwt;
   };

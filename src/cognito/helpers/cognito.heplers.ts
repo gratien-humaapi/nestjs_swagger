@@ -28,7 +28,7 @@ export const attributesToStandard = (attributes: AttributesCognitoType[]) => {
     isVerified: false
   };
 
-  console.log(normalizedSubAttributes);
+  console.log("normalize : ", normalizedSubAttributes);
 
   //   const phoneAttributeValue = attributes.find(
   //     (value) => value.Name == 'phone'
@@ -82,7 +82,10 @@ export const attributesToCognitoFormat = (
   values = [
     ...getAttribute("email"),
     ...getAttribute("phone"),
-    ...getAttribute("custom:tenantId")
+    ...getAttribute("custom:tenant"),
+    ...getAttribute("custom:role"),
+    ...getAttribute("custom:owner"),
+    ...getAttribute("custom:company")
   ];
 
   if (!values.length) {

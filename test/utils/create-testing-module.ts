@@ -6,6 +6,7 @@ export async function createTestingModule() {
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule]
   }).compile();
+  console.log("ici");
 
   const nestApp = moduleFixture.createNestApplication();
   if (process.env.LOCAL_TEST) {

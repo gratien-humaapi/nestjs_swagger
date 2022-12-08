@@ -27,6 +27,10 @@ export class AdminCreateUserInput extends IntersectionType(
   /** whether the temporary password should be permanent or not */
   permanent: boolean = false;
 
+  companyId: string;
+
+  tenantId: string;
+
   @IsBoolean()
   sendPassword: boolean = false;
 

@@ -1,7 +1,12 @@
 /* eslint-disable arrow-body-style */
 import { Injectable } from "@nestjs/common";
 import to from "await-to-js";
-import { CognitoAdminService, CognitoError, IAdminService } from "src/cognito";
+import {
+  CognitoAdminService,
+  CognitoError,
+  CognitoService,
+  IAdminService
+} from "src/cognito";
 
 import { isResolved } from "src/common";
 import { CompanyService, CreateCompanyInput } from "src/company";
@@ -14,7 +19,8 @@ export class AdminService {
   constructor(
     private _cognitoAdminService: CognitoAdminService,
     private _companyService: CompanyService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _cognitoService: CognitoService
   ) {}
 
   adminCreateCompany = async (input: CreateCompanyInput) => {
@@ -29,14 +35,38 @@ export class AdminService {
       sendPassword,
       attributes,
       desiredDeliveryMediums,
+      companyId,
+      tenantId,
+      ownerId,
+      type,
       ...rest
     } = params;
+    attributes.push(
+      {
+        name: "custom:tenant",
+        value: tenantId
+      },
+      {
+        name: "custom:owner",
+        value: ownerId
+      },
+      {
+        name: "custom:role",
+        value: type
+      },
+      {
+        name: "custom:company",
+        value: companyId
+      }
+    );
     const cognitoData = {
       temporaryPassword,
       username,
       sendPassword,
       attributes
     };
+    console.log(cognitoData);
+
     const res = await this._cognitoAdminService.adminCreateUser(cognitoData);
     if (!isResolved(res)) {
       const { error } = res;
@@ -64,10 +94,17 @@ export class AdminService {
       ...otherData,
       userGroup
     };
+
     const userData: CreateUserInput = {
       ...rest,
+      companyId,
+      tenantId,
+      ownerId,
+      type,
+      // companyId: this._cognitoService.currentUser
       authData
     };
+    // console.log(userData);
     const [err, user] = await to(
       this._userService.create({
         ...userData
