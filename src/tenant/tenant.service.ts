@@ -47,8 +47,8 @@ export class TenantService {
    * List all Tenant
    */
   async findAll() {
-    const currencies = await this.tenantRepository.findAll();
-    return currencies;
+    const tenants = await this.tenantRepository.findAll();
+    return tenants;
   }
 
   /**

@@ -6,7 +6,8 @@ import {
   Enum,
   ManyToOne,
   Index,
-  Unique
+  Unique,
+  OneToMany
 } from "@mikro-orm/core";
 import { Field, HideField, ObjectType } from "@nestjs/graphql";
 import { Equals, IsUUID, MaxLength, ValidateIf } from "class-validator";
@@ -82,7 +83,7 @@ export class Company extends CustomBaseEntity<
   currency: Currency;
 
   @Property({
-    onCreate: (e: Company) => (e.headOffice ? e.headOffice : e.id)
+    onCreate: (e: Company) => (e.headOffice ? e.headOffice.id : e.id)
   })
   @HideField()
   // @IsUUID()
@@ -94,6 +95,6 @@ export class Company extends CustomBaseEntity<
   // tenantId: string;
 
   @ManyToOne()
-  @HideField()
-  tenant: Tenant;
+  // @HideField()
+  tenant?: Tenant;
 }

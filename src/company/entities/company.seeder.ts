@@ -24,15 +24,21 @@ export class CompanySeeder extends Seeder {
   ): Promise<void> {
     const { currencies } = context;
     const companyFactory = new CompanyFactory(em);
-    // const tenantFactory = new TenantFactory(em);
-    // const tenant = tenantFactory.createOne()
+    const tenantFactory = new TenantFactory(em);
+    const tenant = await tenantFactory.createOne();
     const headOffice = await companyFactory.createOne({
-      currency: currencies[0]
+      currency: currencies[0],
+      name: tenant.name,
+      description: tenant.description,
+      status: tenant.status,
+      isActive: tenant.isActive,
+      tenant
     });
     companies.map((value) =>
       companyFactory.createOne({
         ...value,
         headOffice,
+        // tenant,
         currency: currencies[0]
       })
     );

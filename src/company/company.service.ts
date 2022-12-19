@@ -3,6 +3,8 @@ import { AutoPath } from "@mikro-orm/core/typings";
 import { Injectable } from "@nestjs/common";
 import { CommonStatusEnum, CustomBaseEntity } from "src/common";
 import { CurrencyRepository } from "src/currency/currency.repository";
+import { Tenant } from "src/tenant";
+import { TenantService } from "src/tenant/tenant.service";
 import { CompanyRepository } from "./company.repository";
 import { CreateCompanyInput } from "./dto/create-company.input";
 import { UpdateCompanyInput } from "./dto/update-company.input";
@@ -12,7 +14,8 @@ import { Company } from "./entities/company.entity";
 export class CompanyService {
   constructor(
     private readonly companyRepository: CompanyRepository,
-    private readonly currencyRepository: CurrencyRepository
+    private readonly currencyRepository: CurrencyRepository,
+    private readonly tenantService: TenantService
   ) {}
 
   async create(input: CreateCompanyInput) {
@@ -21,19 +24,23 @@ export class CompanyService {
     });
 
     // const isGroup = (!input.isGroup && !input.headOfficeId) ?? input.isGroup;
-    const headOffice = input.headOfficeId
-      ? await this.findOne({ id: input.headOfficeId })
-      : undefined;
+    let headOffice: Company | undefined;
+    let tenant: Tenant | undefined;
+
+    if (input.headOfficeId) {
+      headOffice = await this.findOne({ id: input.headOfficeId });
+    } else {
+      tenant = await this.tenantService.create({
+        name: input.name,
+        description: input.description,
+        status: input.status
+      });
+    }
 
     const company = this.companyRepository.create({
-      // tenant: {
-      //   status: input.status,
-      //   name: input.name,
-      //   description: input.description
-      // },
-
       currency,
       headOffice,
+      tenant,
       ...input
       // isGroup
     });
@@ -69,9 +76,11 @@ export class CompanyService {
     return company;
   }
   //
-  async findAll() {
+  async findAll(params: { populate?: AutoPath<Company, string>[] }) {
+    const { populate } = params;
     const companies = await this.companyRepository.findAll({
-      populate: ["currency"],
+      // populate: ["currency", "tenant"],
+      populate,
       strategy: LoadStrategy.JOINED
     });
     return companies;

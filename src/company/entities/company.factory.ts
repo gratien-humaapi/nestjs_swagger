@@ -1,3 +1,4 @@
+import { EntityData } from "@mikro-orm/core";
 import { Factory, Faker } from "@mikro-orm/seeder";
 import { CommonStatusEnum } from "src/common";
 import { v4 } from "uuid";

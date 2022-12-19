@@ -46,8 +46,8 @@ export class CompanyResolver {
   // // -------------------------------------------------------------------------
 
   @Query(() => [Company], { name: "companies" })
-  findAll() {
-    return this.companyService.findAll();
+  findAll(@GqlSelections() populate: AutoPath<Company, string>[]) {
+    return this.companyService.findAll({ populate });
   }
 
   @Query(() => [Company], { name: "companiesByName" })
