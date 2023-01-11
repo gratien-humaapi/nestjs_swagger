@@ -1,7 +1,11 @@
 import { LoadStrategy } from "@mikro-orm/core";
 import { AutoPath } from "@mikro-orm/core/typings";
 import { Injectable } from "@nestjs/common";
-import { CommonStatusEnum, CustomBaseEntity } from "src/common";
+import {
+  CommonStatusEnum,
+  CustomBaseEntity,
+  WithCurrentUser
+} from "src/common";
 import { CurrencyRepository } from "src/currency/currency.repository";
 import { Tenant } from "src/tenant";
 import { TenantService } from "src/tenant/tenant.service";
@@ -113,16 +117,18 @@ export class CompanyService {
   }
 
   async findOneByName(params: {
+    currentUser: WithCurrentUser;
     name: string;
     populate?: AutoPath<Company, string>[];
   }) {
-    const { name, populate } = params;
-    const company = await this.companyRepository.findOneOrFail(
+    const { name, populate, currentUser } = params;
+    const { owner, tenant, role, company } = currentUser;
+    const res = await this.companyRepository.findOneOrFail(
       {
         name: { $eq: `${name}` }
       },
-      { populate }
+      { populate, filters: { currentUser: { company, owner } } }
     );
-    return company;
+    return res;
   }
 }

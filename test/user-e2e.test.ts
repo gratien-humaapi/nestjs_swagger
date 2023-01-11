@@ -1,21 +1,12 @@
-import { UserStatusType } from "@aws-sdk/client-cognito-identity-provider";
 import { Connection, IDatabaseDriver, MikroORM } from "@mikro-orm/core";
-import { INestApplication } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Test, TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
 import { AppModule } from "src/app.module";
-import { CommonStatusEnum } from "src/common";
 import { DatabaseSeeder } from "src/seeder/database";
 import { ApolloSdk, HMAuthSDK } from "test/utils";
 import { PartialDeep } from "type-fest";
 import fetch from "cross-fetch";
-import {
-  CognitoUserStatusEnum,
-  Company,
-  UpdateCompanyInput,
-  UserStatusEnum,
-  UserTypeEnum
-} from "./API";
+import { CognitoUserStatusEnum, UserStatusEnum, UserTypeEnum } from "./API";
 import { authService, sessionFactory } from "./services";
 
 async function createTestingModule() {
@@ -99,20 +90,80 @@ describe("User", () => {
     // myOrm = orm;
   });
 
-  it("create the first user", async () => {
+  it("create an user with permanent true", async () => {
     const { companies } = await client.companies();
     const input = {
-      username: "paul@gmail.com",
-      firstName: "Paul",
+      username: "johndoe@gmail.com",
+      firstName: "John",
       lastName: "Doe",
-      modifiedBy: "",
+      modifiedBy: "d77f8478-3fb7-4610-84ee-04fe44a9eb0f",
+      ownerId: "d77f8478-3fb7-4610-84ee-04fe44a9eb0f",
       companyId: companies[0].id,
       // Raison why you don't use tenant.id
-      tenantId: companies[0].id,
+      tenantId: "d77f8478-3fb7-4610-84ee-04fe44a9eb0f",
       attributes: [
         {
           name: "email",
-          value: "paul@gmail.com",
+          value: "johndoe@gmail.com",
+          isVerified: true
+        },
+        {
+          name: "custom:tenantId",
+          value: companies[0].id
+        }
+      ],
+      status: UserStatusEnum.ACTIVE,
+      photoURL: "",
+      timeZone: "Africa/Porto-Novo",
+      temporaryPassword: "AA7f526bef140a..",
+      sendPassword: false,
+      permanent: false,
+      type: UserTypeEnum.ADMIN
+    };
+    const { createUser } = await client.createUser({
+      input
+    });
+
+    // console.log(createUser);
+
+    expect(createUser).toMatchObject<PartialDeep<typeof createUser>>({
+      authData: expect.objectContaining({
+        attributes: expect.arrayContaining([
+          expect.objectContaining({
+            name: "email",
+            value: input.attributes[0].value,
+            isVerified: expect.any(Boolean)
+          })
+        ]),
+        enabled: true,
+        // // username: "f8150b2d-160e-4fb1-bd94-0b28179f2259",
+        userStatus: CognitoUserStatusEnum.FORCE_CHANGE_PASSWORD
+      }),
+      firstName: input.firstName,
+      lastName: input.lastName,
+      isActive: true,
+      modifiedBy: input.modifiedBy,
+      status: input.status,
+      timeZone: input.timeZone,
+      type: input.type
+    });
+  });
+
+  it("create an user with permanent false", async () => {
+    const { companies } = await client.companies();
+    const input = {
+      username: "pauldoe@gmail.com",
+      firstName: "Paul",
+      lastName: "Doe",
+      modifiedBy: "d77f8478-3fb7-4610-84ee-04fe44a9eb0f",
+      ownerId: "d77f8478-3fb7-4610-84ee-04fe44a9eb0f",
+      companyId: companies[0].id,
+      // Raison why you don't use tenant.id
+      tenantId: "d77f8478-3fb7-4610-84ee-04fe44a9eb0f",
+      attributes: [
+        {
+          name: "email",
+          value: "pauldoe@gmail.com",
           isVerified: true
         },
         {
@@ -128,37 +179,113 @@ describe("User", () => {
       permanent: true,
       type: UserTypeEnum.ADMIN
     };
-    const { adminCreateUser } = await client.adminCreateUser({
+    const { createUser } = await client.createUser({
       input
     });
 
-    // console.log(adminCreateCompany);
+    // console.log(createUser);
 
-    expect(adminCreateUser).toMatchObject<PartialDeep<typeof adminCreateUser>>({
-      authData: {
-        attributes: [
-          {
+    expect(createUser).toMatchObject<PartialDeep<typeof createUser>>({
+      authData: expect.objectContaining({
+        attributes: expect.arrayContaining([
+          expect.objectContaining({
             name: "email",
             value: input.attributes[0].value,
-            isVerified: true
-          }
-          // {
-          //   name: "sub",
-          //   value: "f8150b2d-160e-4fb1-bd94-0b28179f2259",
-          //   isVerified: false
-          // }
-        ],
+            isVerified: expect.any(Boolean)
+          })
+        ]),
         enabled: true,
-        // username: "f8150b2d-160e-4fb1-bd94-0b28179f2259",
+        // // username: "f8150b2d-160e-4fb1-bd94-0b28179f2259",
         userStatus: CognitoUserStatusEnum.FORCE_CHANGE_PASSWORD
-      },
+      }),
       firstName: input.firstName,
       lastName: input.lastName,
       isActive: true,
       modifiedBy: input.modifiedBy,
       status: input.status,
-      timeZone: "Africa/Porto-Novo",
+      timeZone: input.timeZone,
       type: input.type
     });
   });
+
+  // it("ConfirmSignUp user", async () => {
+  //   // const { users } = await client.users();
+  //   // const { authData: {attributes} } = users[0];
+  //   const input = {
+  //     username: "johndoe@gmail.com"
+  //   };
+  //   const { adminConfirmSignUp } = await client.adminConfirmSignUp({
+  //     ...input
+  //   });
+
+  //   console.log(adminConfirmSignUp);
+
+  //   //   expect(adminConfirmSignUp).toMatchObject<
+  //   //     PartialDeep<typeof adminConfirmSignUp>
+  //   //   >({
+  //   //     done: true
+  //   //   });
+  // });
+
+  it("SetUserPassword user", async () => {
+    // const { users } = await client.users();
+    // const { authData: {attributes} } = users[0];
+    const input = {
+      username: "pauldoe@gmail.com",
+      password: "AA7f526bef140a..",
+      permanent: true
+    };
+    const { adminSetUserPassword } = await client.adminSetUserPassword({
+      input
+    });
+
+    // console.log(adminSetUserPassword);
+
+    expect(adminSetUserPassword).toMatchObject<
+      PartialDeep<typeof adminSetUserPassword>
+    >({
+      done: true
+    });
+  });
+
+  it("Get user", async () => {
+    // const { users } = await client.users();
+    // const { authData: {attributes} } = users[0];
+    const input = {
+      username: "testt@mail.com"
+    };
+    const { getUser } = await client.getUser({
+      ...input
+    });
+
+    console.log(getUser);
+
+    expect(getUser).toMatchObject<PartialDeep<typeof getUser>>({
+      username: input.username,
+      attributes: expect.arrayContaining([
+        expect.objectContaining({
+          name: "email",
+          value: input.username,
+          isVerified: expect.any(Boolean)
+        })
+      ])
+    });
+  });
+
+  // it("Delete user", async () => {
+  //   // const { users } = await client.users();
+  //   // const { authData: {attributes} } = users[0];
+  //   const input = {
+  //     username: "johndoe@gmail.com"
+  //   };
+  //   const { adminDeleteUser } = await client.adminDeleteUser({
+  //     ...input
+  //   });
+
+  //   console.log(adminDeleteUser);
+
+  //   expect(adminDeleteUser).toMatchObject<PartialDeep<typeof adminDeleteUser>>({
+  //     done: true
+  //   });
+  // });
 });

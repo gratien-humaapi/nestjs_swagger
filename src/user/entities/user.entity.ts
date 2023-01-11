@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Embedded, Entity, Enum, Property } from "@mikro-orm/core";
-import { ObjectType } from "@nestjs/graphql";
+import { HideField, ObjectType } from "@nestjs/graphql";
 import { MaxLength, ValidateIf } from "class-validator";
 import { BaseEntityWithTUC, UTC } from "../../common";
 import { AuthData } from "../embedded";
@@ -27,6 +27,10 @@ export class User extends BaseEntityWithTUC<
 
   @Enum()
   status: UserStatusEnum;
+
+  @Property()
+  @HideField()
+  email: string;
 
   @Enum()
   onlineStatus: OnlineStatusEnum = OnlineStatusEnum.OFFLINE;

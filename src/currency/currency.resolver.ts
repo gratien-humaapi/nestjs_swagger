@@ -21,9 +21,14 @@ export class CurrencyResolver {
     @CurrentUser() currentUser: ICurrentUser,
     @Args("input") input: CreateCurrencyInput
   ) {
-    const { owner, tenant } = currentUser;
+    const { owner, tenant, company } = currentUser;
 
-    return this.currencyService.create({ owner, tenant, ...input });
+    return this.currencyService.create({
+      owner,
+      tenant,
+      company,
+      ...input
+    });
   }
 
   @Mutation(() => Currency)
@@ -42,8 +47,13 @@ export class CurrencyResolver {
 
   @Query(() => [Currency], { name: "currencies" })
   findAll(@CurrentUser() currentUser: ICurrentUser) {
-    const { owner, tenant, role } = currentUser;
-    return this.currencyService.findAll({ owner, tenant, role });
+    const { owner, tenant, role, company } = currentUser;
+    return this.currencyService.findAll({
+      owner,
+      tenant,
+      role,
+      company
+    });
   }
 
   @Query(() => [Currency], { name: "currenciesByCode" })

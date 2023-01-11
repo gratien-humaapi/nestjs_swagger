@@ -89,12 +89,12 @@ export class Company extends CustomBaseEntity<
   // @IsUUID()
   companyId: string;
 
-  // @Property({ onCreate: (e: Company) => e.id })
+  // @Property({ onCreate: (e: Company) => e.id })x
   // @HideField()
   // @IsUUID()
   // tenantId: string;
 
   @ManyToOne()
-  // @HideField()
+  @HideField()
   tenant?: Tenant;
 }

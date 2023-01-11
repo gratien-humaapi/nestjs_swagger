@@ -27,97 +27,97 @@ export class AdminService {
     return this._companyService.create(input);
   };
 
-  adminCreateUser = async (params: AdminCreateUserInput) => {
-    const {
-      temporaryPassword,
-      permanent,
-      username,
-      sendPassword,
-      attributes,
-      desiredDeliveryMediums,
-      companyId,
-      tenantId,
-      ownerId,
-      type,
-      ...rest
-    } = params;
-    attributes.push(
-      {
-        name: "custom:tenant",
-        value: tenantId
-      },
-      {
-        name: "custom:owner",
-        value: ownerId
-      },
-      {
-        name: "custom:role",
-        value: type
-      },
-      {
-        name: "custom:company",
-        value: companyId
-      }
-    );
-    const cognitoData = {
-      temporaryPassword,
-      username,
-      sendPassword,
-      attributes
-    };
-    console.log(cognitoData);
+  // adminCreateUser = async (params: AdminCreateUserInput) => {
+  //   const {
+  //     temporaryPassword,
+  //     permanent,
+  //     username,
+  //     sendPassword,
+  //     attributes,
+  //     desiredDeliveryMediums,
+  //     companyId,
+  //     tenantId,
+  //     ownerId,
+  //     type,
+  //     ...rest
+  //   } = params;
+  //   attributes.push(
+  //     {
+  //       name: "custom:tenant",
+  //       value: tenantId
+  //     },
+  //     {
+  //       name: "custom:owner",
+  //       value: ownerId
+  //     },
+  //     {
+  //       name: "custom:role",
+  //       value: type
+  //     },
+  //     {
+  //       name: "custom:company",
+  //       value: companyId
+  //     }
+  //   );
+  //   const cognitoData = {
+  //     temporaryPassword,
+  //     username,
+  //     sendPassword,
+  //     attributes
+  //   };
+  //   console.log(cognitoData);
 
-    const res = await this._cognitoAdminService.adminCreateUser(cognitoData);
-    if (!isResolved(res)) {
-      const { error } = res;
-      throw new CognitoError(error);
-    }
+  //   const res = await this._cognitoAdminService.adminCreateUser(cognitoData);
+  //   if (!isResolved(res)) {
+  //     const { error } = res;
+  //     throw new CognitoError(error);
+  //   }
 
-    if (params.permanent) {
-      await this.adminSetUserPassword({
-        password: temporaryPassword,
-        permanent,
-        username
-      });
-    }
+  //   if (params.permanent) {
+  //     await this.adminSetUserPassword({
+  //       password: temporaryPassword,
+  //       permanent,
+  //       username
+  //     });
+  //   }
 
-    const userGroup = await this.adminListGroupsForUser({
-      username,
-      limit: undefined,
-      nextToken: undefined
-    });
-    const {
-      data: { userCreateDate, userLastModifiedDate, ...otherData }
-    } = res;
+  //   const userGroup = await this.adminListGroupsForUser({
+  //     username,
+  //     limit: undefined,
+  //     nextToken: undefined
+  //   });
+  //   const {
+  //     data: { userCreateDate, userLastModifiedDate, ...otherData }
+  //   } = res;
 
-    const authData: CreateUserInput["authData"] = {
-      ...otherData,
-      userGroup
-    };
+  //   const authData: CreateUserInput["authData"] = {
+  //     ...otherData,
+  //     userGroup
+  //   };
 
-    const userData: CreateUserInput = {
-      ...rest,
-      companyId,
-      tenantId,
-      ownerId,
-      type,
-      // companyId: this._cognitoService.currentUser
-      authData
-    };
-    // console.log(userData);
-    const [err, user] = await to(
-      this._userService.create({
-        ...userData
-      })
-    );
+  //   const userData: CreateUserInput = {
+  //     ...rest,
+  //     companyId,
+  //     tenantId,
+  //     ownerId,
+  //     type,
+  //     // companyId: this._cognitoService.currentUser
+  //     authData
+  //   };
+  //   // console.log(userData);
+  //   const [err, user] = await to(
+  //     this._userService.create({
+  //       ...userData
+  //     })
+  //   );
 
-    if (err) {
-      this.adminDeleteUser({ username });
-      throw err;
-    }
+  //   if (err) {
+  //     this.adminDeleteUser({ username });
+  //     throw err;
+  //   }
 
-    return user;
-  };
+  //   return user;
+  // };
 
   adminSetUserPassword = async (
     params: IAdminService["adminSetUserPasswordParams"]

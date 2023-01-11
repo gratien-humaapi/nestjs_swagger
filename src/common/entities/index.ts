@@ -2,3 +2,4 @@
 export * from "./base-with-user-company.entity";
 export * from "./base-with-user.entity";
 export * from "./base.entity";
+export * from "./done-request-gql.entity";

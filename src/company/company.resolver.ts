@@ -2,13 +2,15 @@ import { Resolver, Query, Mutation, Args, Info } from "@nestjs/graphql";
 import {
   GqlSelections,
   fieldsToRelations,
-  GqlValidationPipe
+  GqlValidationPipe,
+  CurrentUser
 } from "src/common";
 import { GraphQLUUID } from "graphql-scalars";
 import { Tenant } from "src/tenant";
 import { GraphQLResolveInfo } from "graphql";
 import { AutoPath } from "@mikro-orm/core/typings";
 import { UsePipes } from "@nestjs/common";
+import { ICurrentUser } from "src/authentification";
 import { CompanyService } from "./company.service";
 import { Company } from "./entities/company.entity";
 import { CreateCompanyInput } from "./dto/create-company.input";
@@ -60,6 +62,7 @@ export class CompanyResolver {
 
   @Query(() => Company, { name: "company" })
   findOne(
+    @CurrentUser() currentUser: ICurrentUser,
     @Args("id", { type: () => GraphQLUUID }) id: string,
     @GqlSelections() populate: AutoPath<Company, string>[]
   ) {
@@ -70,10 +73,11 @@ export class CompanyResolver {
 
   @Query(() => Company, { name: "companyByName" })
   findOneByName(
+    @CurrentUser() currentUser: ICurrentUser,
     @Args("name") name: string,
     @GqlSelections() populate: AutoPath<Company, string>[]
   ) {
-    return this.companyService.findOneByName({ name, populate });
+    return this.companyService.findOneByName({ currentUser, name, populate });
   }
 
   // // -------------------------------------------------------------------------
