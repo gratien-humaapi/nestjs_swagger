@@ -2,25 +2,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { Property, Filter } from "@mikro-orm/core";
-import { HideField } from "@nestjs/graphql";
+import { Property, Filter, Entity } from "@mikro-orm/core";
+import { HideField, ObjectType } from "@nestjs/graphql";
 import { IsUUID } from "class-validator";
 import { CustomBaseEntity } from "./base.entity";
 
 // https://taxsummaries.pwc.com/glossary/currency-codes
 
-// @ObjectType({ isAbstract: true })
-// @Entity({ abstract: true })
-
 type OptionalProps = "modifiedBy" | "tenantId" | "ownerId";
-@Filter({
-  name: "currentUser",
-  cond: ({ company, owner }) => ({
-    company: { $eq: company },
-    owner: { $eq: owner }
-  }),
-  default: true
-})
+// @Filter({
+//   name: "currentUser",
+//   cond: ({ company, owner }) => ({
+//     company: { $eq: company },
+//     owner: { $eq: owner }
+//   }),
+//   default: true
+// })
+
+@ObjectType({ isAbstract: true })
+@Entity({ abstract: true })
 export abstract class BaseEntityWithTU<
   Repository = "",
   T extends string = ""

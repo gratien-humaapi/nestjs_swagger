@@ -27,15 +27,19 @@ export class CompanyResolver {
 
   @Mutation(() => Company)
   createCompany(
+    @CurrentUser() currentUser: ICurrentUser,
     @Args("input") input: CreateCompanyInput,
     @Info() info: GraphQLResolveInfo
   ) {
-    return this.companyService.create(input);
+    return this.companyService.create(input, currentUser);
   }
 
   @Mutation(() => Company)
-  updateCompany(@Args("input") input: UpdateCompanyInput) {
-    return this.companyService.update(input);
+  updateCompany(
+    @CurrentUser() currentUser: ICurrentUser,
+    @Args("input") input: UpdateCompanyInput
+  ) {
+    return this.companyService.update(input, currentUser);
   }
 
   @Mutation(() => Company)
@@ -48,8 +52,11 @@ export class CompanyResolver {
   // // -------------------------------------------------------------------------
 
   @Query(() => [Company], { name: "companies" })
-  findAll(@GqlSelections() populate: AutoPath<Company, string>[]) {
-    return this.companyService.findAll({ populate });
+  findAll(
+    @CurrentUser() currentUser: ICurrentUser,
+    @GqlSelections() populate: AutoPath<Company, string>[]
+  ) {
+    return this.companyService.findAll({ populate, currentUser });
   }
 
   @Query(() => [Company], { name: "companiesByName" })
@@ -68,7 +75,7 @@ export class CompanyResolver {
   ) {
     console.log(populate);
 
-    return this.companyService.findOne({ id, populate });
+    return this.companyService.findOne({ id, populate, currentUser });
   }
 
   @Query(() => Company, { name: "companyByName" })

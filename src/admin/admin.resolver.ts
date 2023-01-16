@@ -9,6 +9,7 @@ import {
   Resolver
 } from "@nestjs/graphql";
 import { GraphQLResolveInfo } from "graphql";
+import { CurrentUser } from "src/common";
 import { Company, CompanyService, CreateCompanyInput } from "src/company";
 import { User } from "src/user/entities/user.entity";
 import { AdminCreateUserInput, AdminSetUserPasswordInput } from "./dto";
@@ -35,9 +36,10 @@ export class AdminResolver {
   @Mutation(() => Company)
   adminCreateCompany(
     @Args("input") input: CreateCompanyInput,
+    @CurrentUser() currentUser,
     @Info() info: GraphQLResolveInfo
   ) {
-    return this._companyService.create(input);
+    return this._companyService.create(input, currentUser);
   }
 
   // @Mutation(() => User)

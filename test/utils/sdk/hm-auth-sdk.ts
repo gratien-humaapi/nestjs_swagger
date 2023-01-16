@@ -132,6 +132,11 @@ export class HMAuthSDK {
 
   admin = false;
 
+  owner = "";
+  tenant = "";
+  company = "";
+  role = "";
+
   constructor(options: IHMAuthSDK["options"]) {
     const { url, fetch: preferredFetch } = options;
 
@@ -166,6 +171,11 @@ export class HMAuthSDK {
     this.groups = [];
     this.sessionflow = "";
     this.sub = "";
+
+    this.owner = "";
+    this.tenant = "";
+    this.company = "";
+    this.role = "";
     // this._clearUIDInLocalStorage();
   };
 
@@ -226,21 +236,22 @@ export class HMAuthSDK {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path};`;
   };
 
-  private _setUIDInLocalStorage = () => {
-    if (!window) {
-      return;
-    }
-    window.localStorage.setItem("uid", this.sub);
-  };
+  // private _setUIDInLocalStorage = () => {
+  //   if (!window) {
+  //     return;
+  //   }
+  //   window.localStorage.setItem("uid", this.sub);
+  // };
 
-  private _clearUIDInLocalStorage = () => {
-    if (!window) {
-      return;
-    }
-    window.localStorage.removeItem("uid");
-  };
+  // private _clearUIDInLocalStorage = () => {
+  //   if (!window) {
+  //     return;
+  //   }
+  //   window.localStorage.removeItem("uid");
+  // };
 
   // https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
+
   parseJwt = (token: string) => {
     if (!token) {
       throw new Error("token must be not null");
@@ -256,10 +267,16 @@ export class HMAuthSDK {
     );
     const parsedJwt = JSON.parse(jsonPayload) as IidTokenDecoded;
 
+    // console.log(parsedJwt);
+
     this.email = parsedJwt.email;
     this.sub = parsedJwt.sub;
     this.groups = parsedJwt["cognito:groups"];
     this.admin = parsedJwt["custom:admin"] === "true";
+    this.owner = parsedJwt["custom:owner"];
+    this.tenant = parsedJwt["custom:tenant"];
+    this.company = parsedJwt["custom:company"];
+    this.role = parsedJwt["custom:role"];
     // this._setUIDInLocalStorage();
 
     return parsedJwt;

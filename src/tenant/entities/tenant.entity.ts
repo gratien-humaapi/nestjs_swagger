@@ -41,4 +41,7 @@ export class Tenant extends CustomBaseEntity<
   @Property()
   @MaxLength(256)
   description: string = "";
+
+  @Property()
+  parentId?: string;
 }

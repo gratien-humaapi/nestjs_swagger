@@ -10,6 +10,13 @@ import { PartialDeep } from "type-fest";
 import { Company, UpdateCompanyInput } from "./API";
 import { sessionFactory } from "./services";
 
+export interface ICurrentUser {
+  owner: string;
+  company: string;
+  tenant: string;
+  role: string;
+}
+
 async function createTestingModule() {
   let moduleFixture;
   // eslint-disable-next-line prefer-const
@@ -30,11 +37,11 @@ async function createTestingModule() {
 }
 
 async function initApp(configService: ConfigService) {
-  let orm: MikroORM<IDatabaseDriver<Connection>>;
-  let myClient: ApolloSdk;
+  // let orm: MikroORM<IDatabaseDriver<Connection>>;
+  // let myClient: ApolloSdk;
   const { nestApp, url } = await createTestingModule();
   // eslint-disable-next-line prefer-const
-  orm = await MikroORM.init({
+  const orm = await MikroORM.init({
     entities: ["src/**/*.entity.ts"],
     dbName: configService.get("POSTGRES_DB"),
     user: configService.get("POSTGRES_USER"),
@@ -42,19 +49,18 @@ async function initApp(configService: ConfigService) {
     type: "postgresql"
     // ...
   });
-  // const generator = orm.getSchemaGenerator();
-  // const seeder = orm.getSeeder();
-  // await seeder.seed();
 
   // eslint-disable-next-line prefer-const
-  myClient = await sessionFactory({
+  const { apolloClient, ...rest } = await sessionFactory({
     url,
     authParams: {
-      username: "kenagbad@live.fr",
-      password: "AKinnoth99.#"
+      // username: "kenagbad@live.fr",
+      // password: "AKinnoth99.#"
+      username: "johndoe@gmail.com",
+      password: "AA7f526bef140a.."
     }
   });
-  return { orm, myClient };
+  return { orm, apolloClient, rest };
 }
 
 const configService = new ConfigService();
@@ -62,26 +68,30 @@ describe("Head Office Company", () => {
   // let client: GraphqlClient;
   let myOrm: MikroORM<IDatabaseDriver<Connection>>;
   let client: ApolloSdk;
+  let currentUser: ICurrentUser;
 
   beforeAll(async () => {
     // A mettre dans une fonction
-    const { orm, myClient } = await initApp(configService);
-    client = myClient;
+    const { orm, apolloClient, rest } = await initApp(configService);
+    client = apolloClient;
+    currentUser = rest;
     const seeder = orm.getSeeder();
 
+    console.log(currentUser);
+
     // Clear the database to start clean
-    await orm.getSchemaGenerator().clearDatabase();
+    // await orm.getSchemaGenerator().clearDatabase();
 
-    // Create some new data using a seeder
-    await seeder.seed(DatabaseSeeder);
+    // // Create some new data using a seeder
+    // await seeder.seed(DatabaseSeeder);
   });
 
-  beforeEach(async () => {
-    // A mettre dans une fonction
-    const { orm, myClient } = await initApp(configService);
-    client = myClient;
-    // myOrm = orm;
-  });
+  // beforeEach(async () => {
+  //   // A mettre dans une fonction
+  //   const { orm, myClient } = await initApp(configService);
+  //   client = myClient;
+  //   // myOrm = orm;
+  // });
 
   it("create a head office Company", async () => {
     const { currencyByCode } = await client.currencyByCode({
@@ -90,10 +100,10 @@ describe("Head Office Company", () => {
 
     const input = {
       currencyId: currencyByCode.id,
-      abbreviation: "Ebay",
+      abbreviation: "Amazon",
       description: "E-commerce and more...",
       industryCode: "58.2",
-      name: "Ebay",
+      name: "Amazon",
       status: CommonStatusEnum.ACTIVE
     };
     const { adminCreateCompany } = await client.adminCreateCompany({
@@ -112,11 +122,8 @@ describe("Head Office Company", () => {
       abbreviation: input.abbreviation,
       isGroup: true,
       industryCode: input.industryCode,
-      tenant: {
-        name: input.name,
-        status: input.status,
-        description: input.description
-      },
+      ownerId: currentUser.owner,
+      modifiedBy: currentUser.owner,
       description: input.description,
       currency: {
         id: currencyByCode.id
@@ -133,7 +140,6 @@ describe("Head Office Company", () => {
     const { companies } = await client.companies();
 
     console.log(companies);
-
     const input = {
       currencyId: currencyByCode.id,
       headOfficeId: companies[0].id,
@@ -159,7 +165,7 @@ describe("Head Office Company", () => {
       abbreviation: input.abbreviation,
       isGroup: false,
       industryCode: input.industryCode,
-      tenant: null,
+      // tenant: null,
       description: input.description,
       currency: {
         id: currencyByCode.id
@@ -199,7 +205,7 @@ describe("Head Office Company", () => {
       abbreviation: input.abbreviation,
       isGroup: false,
       industryCode: input.industryCode,
-      tenant: null,
+      // tenant: null,
       description: input.description,
       currency: {
         id: currencyByCode.id
@@ -260,32 +266,34 @@ describe("Head Office Company", () => {
   });
 });
 
-describe("Affiliate Company", () => {
-  // let client: GraphqlClient;
-  let myOrm: MikroORM<IDatabaseDriver<Connection>>;
-  let client: ApolloSdk;
+//
 
-  beforeAll(async () => {
-    // A mettre dans une fonction
-    const { orm, myClient } = await initApp(configService);
-    client = myClient;
-    const seeder = orm.getSeeder();
+// describe("Affiliate Company", () => {
+//   // let client: GraphqlClient;
+//   let myOrm: MikroORM<IDatabaseDriver<Connection>>;
+//   let client: ApolloSdk;
 
-    // Clear the database to start clean
-    await orm.getSchemaGenerator().clearDatabase();
+//   beforeAll(async () => {
+//     // A mettre dans une fonction
+//     const { orm, myClient } = await initApp(configService);
+//     client = myClient;
+//     const seeder = orm.getSeeder();
 
-    // Create some new data using a seeder
-    await seeder.seed(DatabaseSeeder);
-  });
+//     // Clear the database to start clean
+//     await orm.getSchemaGenerator().clearDatabase();
 
-  beforeEach(async () => {
-    // A mettre dans une fonction
-    const { orm, myClient } = await initApp(configService);
-    client = myClient;
-    // myOrm = orm;
-  });
+//     // Create some new data using a seeder
+//     await seeder.seed(DatabaseSeeder);
+//   });
 
-  it("create a head office Company", async () => {
-    // Waiting for oder ...
-  });
-});
+//   beforeEach(async () => {
+//     // A mettre dans une fonction
+//     const { orm, myClient } = await initApp(configService);
+//     client = myClient;
+//     // myOrm = orm;
+//   });
+
+//   it("create a head office Company", async () => {
+//     // Waiting for order ...
+//   });
+// });

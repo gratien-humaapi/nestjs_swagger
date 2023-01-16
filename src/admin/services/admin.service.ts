@@ -23,9 +23,9 @@ export class AdminService {
     private _cognitoService: CognitoService
   ) {}
 
-  adminCreateCompany = async (input: CreateCompanyInput) => {
-    return this._companyService.create(input);
-  };
+  // adminCreateCompany = async (input: CreateCompanyInput) => {
+  //   return this._companyService.create(input);
+  // };
 
   // adminCreateUser = async (params: AdminCreateUserInput) => {
   //   const {

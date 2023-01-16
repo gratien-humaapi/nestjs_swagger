@@ -14,6 +14,10 @@ export class CreateCompanyInput extends OmitType(
     "headOffice",
     "headOfficeName",
     "companyId",
+    // Add this to fix it
+    // "tenantId",
+    "ownerId",
+    "modifiedBy",
     "isGroup",
     "tenant"
   ] as const,
