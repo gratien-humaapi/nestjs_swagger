@@ -2,23 +2,22 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import {
   Entity,
-  Property,
   Enum,
-  ManyToOne,
   Index,
+  ManyToOne,
+  Property,
   Unique
 } from "@mikro-orm/core";
 import { Field, HideField, ObjectType } from "@nestjs/graphql";
-import { Equals, IsUUID, MaxLength, ValidateIf } from "class-validator";
-import { GraphQLUUID } from "graphql-scalars";
-import { Tenant } from "../../tenant";
-import { Currency } from "../../currency/entities/currency.entity";
+import { IsUUID, MaxLength } from "class-validator";
 import {
-  BaseEntityWithTUC,
+  BaseEntityWithTU,
   CommonStatusEnum,
   CustomBaseEntity,
   IsBusinessIndustry
 } from "../../common";
+import { Currency } from "../../currency/entities/currency.entity";
+import { Tenant } from "../../tenant";
 import { CompanyRepository } from "../company.repository";
 
 type CustomOptionalProps =
@@ -82,18 +81,23 @@ export class Company extends CustomBaseEntity<
   currency: Currency;
 
   @Property({
-    onCreate: (e: Company) => (e.headOffice ? e.headOffice : e.id)
+    onCreate: (e: Company) => (e.headOffice ? e.headOffice.id : e.id)
   })
   @HideField()
   // @IsUUID()
   companyId: string;
 
-  // @Property({ onCreate: (e: Company) => e.id })
+  @Property({ onCreate: (entity: Company) => entity.ownerId })
+  @IsUUID()
+  modifiedBy: string;
+
+  @Property()
   // @HideField()
-  // @IsUUID()
-  // tenantId: string;
+  @IsUUID()
+  ownerId: string;
 
   @ManyToOne()
+  // @Property()
   @HideField()
-  tenant: Tenant;
+  tenant?: Tenant;
 }

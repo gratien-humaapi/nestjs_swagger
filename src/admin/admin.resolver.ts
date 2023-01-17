@@ -9,17 +9,18 @@ import {
   Resolver
 } from "@nestjs/graphql";
 import { GraphQLResolveInfo } from "graphql";
+import { CurrentUser } from "src/common";
 import { Company, CompanyService, CreateCompanyInput } from "src/company";
 import { User } from "src/user/entities/user.entity";
 import { AdminCreateUserInput, AdminSetUserPasswordInput } from "./dto";
 import { AuthUser } from "./entities";
 import { AdminService } from "./services";
 
-@ObjectType()
-class TempClass {
-  @Field()
-  done: boolean;
-}
+// @ObjectType()
+// class TempClass {
+//   @Field()
+//   done: boolean;
+// }
 
 @Resolver()
 export class AdminResolver {
@@ -35,30 +36,31 @@ export class AdminResolver {
   @Mutation(() => Company)
   adminCreateCompany(
     @Args("input") input: CreateCompanyInput,
+    @CurrentUser() currentUser,
     @Info() info: GraphQLResolveInfo
   ) {
-    return this._companyService.create(input);
+    return this._companyService.create(input, currentUser);
   }
 
-  @Mutation(() => User)
-  adminCreateUser(@Args("input") input: AdminCreateUserInput) {
-    return this._adminService.adminCreateUser(input);
-  }
+  // @Mutation(() => User)
+  // adminCreateUser(@Args("input") input: AdminCreateUserInput) {
+  //   return this._adminService.adminCreateUser(input);
+  // }
 
-  @Mutation(() => TempClass)
-  adminDeleteUser(@Args("username") username: string) {
-    return this._adminService.adminDeleteUser({ username });
-  }
+  // @Mutation(() => TempClass)
+  // adminDeleteUser(@Args("username") username: string) {
+  //   return this._adminService.adminDeleteUser({ username });
+  // }
 
-  @Mutation(() => TempClass)
-  adminConfirmSignUp(@Args("username") username: string) {
-    return this._adminService.adminConfirmSignUp({ username });
-  }
+  // @Mutation(() => TempClass)
+  // adminConfirmSignUp(@Args("username") username: string) {
+  //   return this._adminService.adminConfirmSignUp({ username });
+  // }
 
-  @Mutation(() => TempClass)
-  adminSetUserPassword(@Args("input") input: AdminSetUserPasswordInput) {
-    return this._adminService.adminSetUserPassword(input);
-  }
+  // @Mutation(() => TempClass)
+  // adminSetUserPassword(@Args("input") input: AdminSetUserPasswordInput) {
+  //   return this._adminService.adminSetUserPassword(input);
+  // }
 
   // // // -------------------------------------------------------------------------
   // // // Query
@@ -69,10 +71,10 @@ export class AdminResolver {
   //   return this.companyService.findAll();
   // }
 
-  @Query(() => AuthUser)
-  adminGetUser(@Args("username") username: string) {
-    return this._adminService.adminGetUser({ username });
-  }
+  // @Query(() => AuthUser)
+  // adminGetUser(@Args("username") username: string) {
+  //   return this._adminService.adminGetUser({ username });
+  // }
 
   // // -------------------------------------------------------------------------
   // // Resolve fields (extend fields on the entity)

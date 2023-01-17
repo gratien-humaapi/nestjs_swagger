@@ -24,17 +24,32 @@ export class CompanySeeder extends Seeder {
   ): Promise<void> {
     const { currencies } = context;
     const companyFactory = new CompanyFactory(em);
-    // const tenantFactory = new TenantFactory(em);
-    // const tenant = tenantFactory.createOne()
+    const tenantFactory = new TenantFactory(em);
+    const tenant = await tenantFactory.createOne();
     const headOffice = await companyFactory.createOne({
-      currency: currencies[0]
+      currency: currencies[0],
+      name: tenant.name,
+      description: tenant.description,
+      status: tenant.status,
+      isActive: tenant.isActive,
+      ownerId: "d77f8478-3fb7-4610-84ee-04fe44a9eb0f",
+      tenant
     });
-    companies.map((value) =>
+    companies.map(async (value) => {
+      const tenantWithParent = await tenantFactory.createOne({
+        parentId: tenant.id
+      });
       companyFactory.createOne({
         ...value,
+        name: tenantWithParent.name,
+        description: tenantWithParent.description,
+        isActive: tenantWithParent.isActive,
+        status: tenantWithParent.status,
         headOffice,
+        tenant: tenantWithParent,
+        ownerId: "d77f8478-3fb7-4610-84ee-04fe44a9eb0f",
         currency: currencies[0]
-      })
-    );
+      });
+    });
   }
 }

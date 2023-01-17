@@ -6,6 +6,7 @@ import { Tenant } from "./entities/tenant.entity";
 
 @Module({
   imports: [MikroOrmModule.forFeature([Tenant])],
-  providers: [TenantResolver, TenantService]
+  providers: [TenantResolver, TenantService],
+  exports: [TenantService]
 })
 export class TenantModule {}

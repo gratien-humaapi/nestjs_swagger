@@ -17,7 +17,7 @@ export const sessionFactory = async (params: ISessionService) => {
   const { url, authParams } = params;
   const auth = authService({ url, fetch });
   const res = await auth.signIn({ ...authParams });
-  console.log(res);
+  // console.log(res);
 
   // Apollo
   const accessToken = res?.authenticationResult?.accessToken;
@@ -38,7 +38,12 @@ export const sessionFactory = async (params: ISessionService) => {
     cache: new InMemoryCache()
   });
 
+  // Get user's infos
+  const { owner, tenant, company, role } = auth;
+  // console.log({ owner, tenant, company, role });
+
   // const client = graphqlClient({ url, accessToken: res.idToken });
-  return getSdkApollo(client);
+  const apolloClient = getSdkApollo(client);
+  return { owner, tenant, company, role, apolloClient };
   // return client;
 };
