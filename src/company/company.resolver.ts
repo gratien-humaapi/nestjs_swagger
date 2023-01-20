@@ -2,15 +2,14 @@ import { Resolver, Query, Mutation, Args, Info } from "@nestjs/graphql";
 import {
   GqlSelections,
   fieldsToRelations,
-  GqlValidationPipe,
-  CurrentUser
+  GqlValidationPipe
 } from "src/common";
 import { GraphQLUUID } from "graphql-scalars";
 import { Tenant } from "src/tenant";
 import { GraphQLResolveInfo } from "graphql";
 import { AutoPath } from "@mikro-orm/core/typings";
 import { UsePipes } from "@nestjs/common";
-import { ICurrentUser } from "src/authentification";
+import {} from "src/authentification";
 import { CompanyService } from "./company.service";
 import { Company } from "./entities/company.entity";
 import { CreateCompanyInput } from "./dto/create-company.input";
@@ -27,19 +26,15 @@ export class CompanyResolver {
 
   @Mutation(() => Company)
   createCompany(
-    @CurrentUser() currentUser: ICurrentUser,
     @Args("input") input: CreateCompanyInput,
     @Info() info: GraphQLResolveInfo
   ) {
-    return this.companyService.create(input, currentUser);
+    return this.companyService.create(input);
   }
 
   @Mutation(() => Company)
-  updateCompany(
-    @CurrentUser() currentUser: ICurrentUser,
-    @Args("input") input: UpdateCompanyInput
-  ) {
-    return this.companyService.update(input, currentUser);
+  updateCompany(@Args("input") input: UpdateCompanyInput) {
+    return this.companyService.update(input);
   }
 
   @Mutation(() => Company)
@@ -52,11 +47,8 @@ export class CompanyResolver {
   // // -------------------------------------------------------------------------
 
   @Query(() => [Company], { name: "companies" })
-  findAll(
-    @CurrentUser() currentUser: ICurrentUser,
-    @GqlSelections() populate: AutoPath<Company, string>[]
-  ) {
-    return this.companyService.findAll({ populate, currentUser });
+  findAll(@GqlSelections() populate: AutoPath<Company, string>[]) {
+    return this.companyService.findAll({ populate });
   }
 
   @Query(() => [Company], { name: "companiesByName" })
@@ -69,22 +61,20 @@ export class CompanyResolver {
 
   @Query(() => Company, { name: "company" })
   findOne(
-    @CurrentUser() currentUser: ICurrentUser,
     @Args("id", { type: () => GraphQLUUID }) id: string,
     @GqlSelections() populate: AutoPath<Company, string>[]
   ) {
     console.log(populate);
 
-    return this.companyService.findOne({ id, populate, currentUser });
+    return this.companyService.findOne({ id, populate });
   }
 
   @Query(() => Company, { name: "companyByName" })
   findOneByName(
-    @CurrentUser() currentUser: ICurrentUser,
     @Args("name") name: string,
     @GqlSelections() populate: AutoPath<Company, string>[]
   ) {
-    return this.companyService.findOneByName({ currentUser, name, populate });
+    return this.companyService.findOneByName({ name, populate });
   }
 
   // // -------------------------------------------------------------------------

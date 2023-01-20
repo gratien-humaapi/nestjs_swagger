@@ -2,10 +2,12 @@ import { LoadStrategy, Options } from "@mikro-orm/core";
 import { ConfigService } from "@nestjs/config";
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
 import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
+import { CurrentUserORMSuscriber } from "./authorization/suscribers";
 
 const configService = new ConfigService();
 
 const MikroOrmConfig: Options = {
+  // allowGlobalContext: true,
   entities: ["dist/**/*.entity.js"],
   entitiesTs: ["src/**/*.entity.ts"],
   // db config

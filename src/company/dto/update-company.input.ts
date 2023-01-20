@@ -16,7 +16,6 @@ export class UpdateCompanyInput extends OmitType(
 
     "modifiedBy",
     // "tenantId",
-    "companyId",
     "ownerId"
     // "tenant"
   ] as const,

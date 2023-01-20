@@ -13,7 +13,6 @@ export class CreateCompanyInput extends OmitType(
     "currency",
     "headOffice",
     "headOfficeName",
-    "companyId",
     // Add this to fix it
     // "tenantId",
     "ownerId",

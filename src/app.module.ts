@@ -19,6 +19,8 @@ import { TenantModule } from "./tenant/tenant.module";
 import { CompanyModule } from "./company/company.module";
 import { UserModule } from "./user/user.module";
 import { AuthorizationModule } from "./authorization/authorization.module";
+import { CognitoModule } from "./cognito";
+import { FilterInterceptor } from "./authorization/filter.interceptor";
 
 @Module({
   imports: [
@@ -59,7 +61,8 @@ import { AuthorizationModule } from "./authorization/authorization.module";
     TenantModule,
     CompanyModule,
     UserModule,
-    AuthorizationModule
+    AuthorizationModule,
+    CognitoModule
     // DatabaseModule
     // PostsModule
   ],
@@ -71,6 +74,10 @@ import { AuthorizationModule } from "./authorization/authorization.module";
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsInterceptor
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: FilterInterceptor
     }
   ],
   controllers: [AppController]
