@@ -36,17 +36,17 @@ export class CompanyService {
       });
     }
 
-    const tenant = await this.tenantService.create({
+    const tenantEntity = await this.tenantService.create({
       name: input.name,
       description: input.description,
       status: input.status,
-      parentId: headOffice?.tenant?.id
+      parentId: headOffice?.tenantEntity?.id
     });
 
     const company = this.companyRepository.create({
       currency,
       headOffice,
-      tenant,
+      tenantEntity,
       ...input
     });
     await this.companyRepository.persistAndFlush(company);

@@ -12,12 +12,10 @@ export class UpdateCompanyInput extends OmitType(
     "headOffice",
     "headOfficeName",
     "isGroup",
-    "tenant",
+    "tenantEntity",
 
     "modifiedBy",
-    // "tenantId",
     "ownerId"
-    // "tenant"
   ] as const,
   InputType
 ) {}

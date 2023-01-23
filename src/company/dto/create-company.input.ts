@@ -18,7 +18,7 @@ export class CreateCompanyInput extends OmitType(
     "ownerId",
     "modifiedBy",
     "isGroup",
-    "tenant"
+    "tenantEntity"
   ] as const,
   InputType
 ) {

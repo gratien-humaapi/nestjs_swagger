@@ -3,7 +3,8 @@ import {
   Injectable,
   NestInterceptor,
   ExecutionContext,
-  CallHandler
+  CallHandler,
+  ContextType
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
@@ -16,6 +17,10 @@ export class FilterInterceptor implements NestInterceptor {
     private cognitoService: CognitoService
   ) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const contextType = context.getType<ContextType>();
+    if (contextType === "http") {
+      return next.handle();
+    }
     console.log("Before...");
     const { owner, tenant } = this.cognitoService.currentUser;
     this.em.setFilterParams("currentUser", {

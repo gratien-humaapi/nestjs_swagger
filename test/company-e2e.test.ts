@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Connection, IDatabaseDriver, MikroORM } from "@mikro-orm/core";
-import { INestApplication } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Test, TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
 import { AppModule } from "src/app.module";
-import { CommonStatusEnum } from "src/common";
 import { DatabaseSeeder } from "src/seeder/database";
 import { ApolloSdk } from "test/utils";
 import { PartialDeep } from "type-fest";
-import { Company, UpdateCompanyInput } from "./API";
+import { CommonStatusEnum, Company, UpdateCompanyInput } from "./API";
 import { sessionFactory } from "./services";
 
 export interface ICurrentUser {
@@ -66,7 +64,7 @@ async function initApp(configService: ConfigService, loginData) {
 }
 
 const configService = new ConfigService();
-describe("Head Office Company", () => {
+describe("CRUD", () => {
   // let client: GraphqlClient;
   let myOrm: MikroORM<IDatabaseDriver<Connection>>;
   let client: ApolloSdk;
@@ -89,6 +87,15 @@ describe("Head Office Company", () => {
 
     // Create some new data using a seeder
     await seeder.seed(DatabaseSeeder);
+  });
+
+  beforeEach(async () => {
+    const { orm, apolloClient, rest } = await initApp(configService, {
+      username: "johndoe@gmail.com",
+      password: "AA7f526bef140a.."
+    });
+    client = apolloClient;
+    currentUser = rest;
   });
 
   it("create a head office Company", async () => {
@@ -176,11 +183,11 @@ describe("Head Office Company", () => {
     const { companies } = await client.companies();
 
     const input: UpdateCompanyInput = {
-      abbreviation: "MTN",
-      description: "Communications and more...",
-      id: companies[2].id,
+      abbreviation: "Vinted",
+      description: "Shopping and more...",
+      id: companies[0].id,
       industryCode: "55",
-      name: "MTN Benin",
+      name: "Vinted",
       status: CommonStatusEnum.ACTIVE
     };
     const { updateCompany } = await client.updateCompany({
@@ -195,7 +202,7 @@ describe("Head Office Company", () => {
       abbreviation: input.abbreviation,
       isGroup: expect.any(Boolean),
       industryCode: input.industryCode,
-      ownerId: companies[2].ownerId,
+      ownerId: companies[1].ownerId,
       modifiedBy: currentUser.owner,
       description: input.description!
       // currency: {
@@ -208,31 +215,31 @@ describe("Head Office Company", () => {
     const { companies } = await client.companies();
 
     const { removeCompany } = await client.removeCompany({
-      id: companies[3].id
+      id: companies[1].id
     });
 
     expect(removeCompany).toMatchObject<PartialDeep<typeof removeCompany>>({
       isActive: true,
       // headOfficeName: companies[2].headOfficeName,
       status: CommonStatusEnum.ACTIVE,
-      name: companies[3].name,
-      abbreviation: companies[3].abbreviation,
-      isGroup: companies[3].isGroup,
-      industryCode: companies[3].industryCode,
+      name: companies[1].name,
+      abbreviation: companies[1].abbreviation,
+      isGroup: companies[1].isGroup,
+      industryCode: companies[1].industryCode,
       // tenant: null,
-      description: companies[3].description,
-      currency: companies[3].currency
+      description: companies[1].description,
+      currency: companies[1].currency
     });
   });
 });
 
 //
-
-describe("Create Company with a new user", () => {
+describe("Ownership 1", () => {
   // let client: GraphqlClient;
   let myOrm: MikroORM<IDatabaseDriver<Connection>>;
   let client: ApolloSdk;
   let currentUser: ICurrentUser;
+  // eslint-disable-next-line prefer-const
 
   beforeAll(async () => {
     // A mettre dans une fonction
@@ -242,6 +249,7 @@ describe("Create Company with a new user", () => {
     });
     client = apolloClient;
     currentUser = rest;
+    myOrm = orm;
     const seeder = orm.getSeeder();
 
     console.log("user2: ", currentUser);
@@ -253,141 +261,61 @@ describe("Create Company with a new user", () => {
     await seeder.seed(DatabaseSeeder);
   });
 
-  it("create a Company Moov", async () => {
-    const { currencyByCode } = await client.currencyByCode({
-      code: "XOF"
+  beforeEach(async () => {
+    const { orm, apolloClient, rest } = await initApp(configService, {
+      username: "pauldoe@gmail.com",
+      password: "AA7f526bef140a.."
     });
-
-    const { companies } = await client.companies();
-
-    const input = {
-      currencyId: currencyByCode.id,
-      headOfficeId: companies[2].id,
-      abbreviation: "Moov",
-      description: "Communications and more...",
-      industryCode: "58.2",
-      name: "Moov",
-      status: CommonStatusEnum.ACTIVE
-    };
-    const { adminCreateCompany } = await client.adminCreateCompany({
-      input
-    });
-
-    // console.log(adminCreateCompany);
-
-    expect(adminCreateCompany).toMatchObject<
-      PartialDeep<typeof adminCreateCompany>
-    >({
-      isActive: expect.any(Boolean),
-      headOfficeName: companies[2].name,
-      status: CommonStatusEnum.ACTIVE,
-      name: input.name,
-      abbreviation: input.abbreviation,
-      isGroup: expect.any(Boolean),
-      industryCode: input.industryCode,
-      ownerId: currentUser.owner,
-      modifiedBy: currentUser.owner,
-      description: input.description,
-      currency: {
-        id: currencyByCode.id
-      }
-    });
+    client = apolloClient;
+    currentUser = rest;
   });
 
   // eslint-disable-next-line arrow-body-style
-  it("create a company under Moov", async () => {
+
+  it("Companies", async () => {
     const { currencyByCode } = await client.currencyByCode({
       code: "XOF"
     });
 
-    // const { companyByName } = await client.companyByName({ name: "Moov" });
-
-    // console.log(companyByName);
-    const input = {
-      currencyId: currencyByCode.id,
-      // headOfficeId: companyByName.id,
-      abbreviation: "MGC",
-      description: "Games, enjoy and more...",
-      industryCode: "58.2",
-      name: "Moov Games Center",
-      status: CommonStatusEnum.ACTIVE
-    };
-    const { adminCreateCompany } = await client.adminCreateCompany({
-      input
-    });
-
-    console.log(adminCreateCompany);
-
-    expect(adminCreateCompany).toMatchObject<
-      PartialDeep<typeof adminCreateCompany>
-    >({
-      isActive: true,
-      // headOfficeName: companyByName.name,
-      status: CommonStatusEnum.ACTIVE,
-      name: input.name,
-      abbreviation: input.abbreviation,
-      isGroup: expect.any(Boolean),
-      industryCode: input.industryCode,
-      ownerId: currentUser.owner,
-      modifiedBy: currentUser.owner,
-      description: input.description,
-      currency: {
-        id: currencyByCode.id
+    const list = [
+      {
+        abbreviation: "Tesla",
+        name: "Tesla"
+      },
+      {
+        abbreviation: "Google",
+        name: "Google"
+      },
+      {
+        abbreviation: "Firefox",
+        name: "Firefox"
       }
-    });
-  });
+    ];
+    const createdCompanies = list.map(async (value) =>
+      // eslint-disable-next-line @typescript-eslint/return-await
+      {
+        const { adminCreateCompany } = await client.adminCreateCompany({
+          input: {
+            currencyId: currencyByCode.id,
+            // headOfficeId: companies[2].id,
+            abbreviation: value.abbreviation,
+            description: "Communications and more...",
+            industryCode: "58.2",
+            name: value.name,
+            status: CommonStatusEnum.ACTIVE
+          }
+        });
+        return adminCreateCompany;
+      }
+    );
+    const [company1, company2] = await Promise.all(createdCompanies);
 
-  it("Update a Company and his status", async () => {
     const { companies } = await client.companies();
+    console.log(companies);
 
-    const input: UpdateCompanyInput = {
-      abbreviation: "Humaapi",
-      description: "Technologie and more...",
-      id: companies[3].id,
-      industryCode: "55",
-      name: "Humaapi",
-      status: CommonStatusEnum.PENDING
-    };
-    const { updateCompany } = await client.updateCompany({
-      input
-    });
-
-    expect(updateCompany).toMatchObject<PartialDeep<typeof updateCompany>>({
-      isActive: expect.any(Boolean),
-      // headOfficeName: companies[3].name,
-      status: input.status,
-      name: input.name,
-      abbreviation: input.abbreviation,
-      isGroup: expect.any(Boolean),
-      industryCode: input.industryCode,
-      ownerId: companies[3].ownerId,
-      modifiedBy: currentUser.owner,
-      description: input.description!
-      // currency: {
-      //   id: currencyByCode.id
-      // }
-    });
-
-    // });
-
-    // it("Delete a Company", async () => {
-    //   const { companies } = await client.companies();
-
-    //   const { removeCompany } = await client.removeCompany({
-    //     id: companies[3].id
-    //   });
-
-    //   expect(removeCompany).toMatchObject<PartialDeep<typeof removeCompany>>({
-    //     isActive: true,
-    //     // headOfficeName: companies[2].headOfficeName,
-    //     status: CommonStatusEnum.ACTIVE,
-    //     name: companies[3].name,
-    //     abbreviation: companies[3].abbreviation,
-    //     isGroup: companies[3].isGroup,
-    //     industryCode: companies[3].industryCode,
-    //     // tenant: null,
-    //     description: companies[3].description,
-    //     currency: companies[3].currency
-    //   });
+    expect(companies).toMatchObject([
+      expect.objectContaining({ id: company1.id }),
+      expect.objectContaining({ id: company2.id })
+    ]);
   });
 });
