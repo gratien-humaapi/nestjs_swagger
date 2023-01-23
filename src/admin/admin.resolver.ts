@@ -36,10 +36,9 @@ export class AdminResolver {
   @Mutation(() => Company)
   adminCreateCompany(
     @Args("input") input: CreateCompanyInput,
-    @CurrentUser() currentUser,
     @Info() info: GraphQLResolveInfo
   ) {
-    return this._companyService.create(input, currentUser);
+    return this._companyService.create(input);
   }
 
   // @Mutation(() => User)

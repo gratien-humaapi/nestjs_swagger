@@ -9,6 +9,7 @@ export class TenantFactory extends Factory<Tenant> {
   definition(faker: Faker): Partial<Tenant> {
     const name = faker.name.findName();
     return {
+      id: v4(),
       name,
       status: CommonStatusEnum.ACTIVE,
       description: "This is a place holder",

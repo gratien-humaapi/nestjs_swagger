@@ -26,13 +26,14 @@ type CustomOptionalProps =
   | "tenantId"
   | "companyId"
   | "ownerId"
-  | "tenant"
+  | "modifiedBy"
+  | "tenantEntity"
   | "headOfficeName"
   | "isGroup";
 
 @ObjectType()
 @Entity({ customRepository: () => CompanyRepository })
-export class Company extends CustomBaseEntity<
+export class Company extends BaseEntityWithTU<
   CompanyRepository,
   CustomOptionalProps
 > {
@@ -80,24 +81,8 @@ export class Company extends CustomBaseEntity<
   @ManyToOne()
   currency: Currency;
 
-  @Property({
-    onCreate: (e: Company) => (e.headOffice ? e.headOffice.id : e.id)
-  })
-  @HideField()
-  // @IsUUID()
-  companyId: string;
-
-  @Property({ onCreate: (entity: Company) => entity.ownerId })
-  @IsUUID()
-  modifiedBy: string;
-
-  @Property()
-  // @HideField()
-  @IsUUID()
-  ownerId: string;
-
   @ManyToOne()
   // @Property()
   @HideField()
-  tenant?: Tenant;
+  tenantEntity?: Tenant;
 }

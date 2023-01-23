@@ -24,34 +24,6 @@ export interface IBaseEntity {
 @InputType({ isAbstract: true }) // needed for Maped type when using jest e2e @see https://stackoverflow.com/questions/59527847/input-object-type-typename-must-define-one-or-more-fields
 @ObjectType({ isAbstract: true })
 @Entity({ abstract: true })
-// @Filter({
-//   name: "currentUser",
-//   cond: ({ company, owner, tenant }) => (
-//     // eslint-disable-next-line no-sequences
-//     console.log("here", company, owner, tenant),
-//     {
-//       // company: { $eq: company },
-//       // owner: { $eq: owner }
-//       // tenant: {
-//       //   parentId: { $eq: "38095910-e6a0-451a-b5fe-f906213aada6" },
-//       //   $eq: "38095910-e6a0-451a-b5fe-f906213aada6"
-//       // }
-//       $or: [
-//         {
-//           tenant: { parentId: { $eq: "75b6d68a-4147-421f-ab30-61827b0a11ec" } }
-//         },
-//         {
-//           $or: [
-//             {
-//               tenant: { $eq: "75b6d68a-4147-421f-ab30-61827b0a11ec" }
-//             }
-//           ]
-//         }
-//       ]
-//     }
-//   ),
-//   default: true
-// })
 export abstract class CustomBaseEntity<Repository, T extends string = "">
   implements IBaseEntity
 {

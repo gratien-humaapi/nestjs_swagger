@@ -19,13 +19,15 @@ export class CurrentUserORMSuscriber<T> implements EventSubscriber<T> {
     const { em, entity } = args;
     const baseClass = wrap(entity, true).__meta.extends;
     if (baseClass.includes("BaseEntityWithTU")) {
-      const { role, owner } = this._cognitoService.currentUser;
+      const { role, owner, tenant } = this._cognitoService.currentUser;
       const ownerId = role === "admin" ? (entity.id as string) : owner;
       console.log("in subscriber");
 
       wrap(entity).assign(
         {
-          ownerId
+          ownerId,
+          tenantId: tenant,
+          modifiedBy: owner
         },
         { em }
       );

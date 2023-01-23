@@ -15,7 +15,8 @@ export class CompanyFactory extends Factory<Company> {
       status: CommonStatusEnum.ACTIVE,
       industryCode: "58.2",
       description: "This is a place holder",
-      isActive: true
+      isActive: true,
+      ownerId: v4()
     };
   }
 }

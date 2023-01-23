@@ -6,7 +6,7 @@ import { IndustrySeeder } from "src/industry/entities/industry.seeder";
 
 export class DatabaseSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {
-    return this.call(em, [CurrencySeeder, CompanySeeder, IndustrySeeder]);
+    return this.call(em, [CurrencySeeder, IndustrySeeder, CompanySeeder]);
 
     // Industries
     // industries.map(async ({ section, code, level, name, categoryName }) => {
