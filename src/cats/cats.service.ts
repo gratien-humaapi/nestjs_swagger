@@ -1,19 +1,43 @@
+import { EntityManager } from "@mikro-orm/sqlite";
 import { Injectable } from "@nestjs/common";
-import { Cat } from "src/cats/cat.interface";
+import { v4 } from "uuid";
+import { CatRepository } from "./cats.repository";
+import { CreateCatDto } from "./dto";
+import { UpdateCatDto } from "./dto/update-cat.dto";
+import { OkResponse } from "src/common/responses";
 
 @Injectable()
 export class CatsService {
-  private readonly cats: Cat[] = [];
+  constructor(
+    private readonly catRepository: CatRepository,
+    private readonly em: EntityManager
+  ) {}
 
-  create(cat: Cat) {
-    this.cats.push(cat);
-  }
+  create = async (dto: CreateCatDto) => {
+    const input = { id: v4(), ...dto };
+    const res = this.catRepository.create(input);
+    await this.em.flush();
+    console.log(res);
+    return res;
+  };
 
-  findAll(): Cat[] {
-    return this.cats;
-  }
+  update = async (id: string, dto: UpdateCatDto) => {
+    const cat = await this.catRepository.findOneOrFail({ id });
+    this.catRepository.assign(cat, dto);
+    await this.em.flush();
+    return cat;
+  };
 
-  findOne(id: number) {
-    return this.cats[id];
-  }
+  findAll = async () => {
+    return this.catRepository.findAll();
+  };
+
+  findOne = async (id: string) => {
+    return this.catRepository.findOne({ id });
+  };
+
+  remove = async (id: string) => {
+    await this.catRepository.nativeDelete({ id });
+    return new OkResponse()
+  };
 }

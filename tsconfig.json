@@ -5,14 +5,18 @@
       "tsconfig-paths/register"
     ]
   },
+  
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "CommonJS",
+    // "moduleResolution": "Node16",
+    "allowJs": true,
     "declaration": true, // it clash with package inference
     "removeComments": true,
     "emitDecoratorMetadata": true,
+    // "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "target": "ES2022",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": ".",
@@ -25,9 +29,16 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
   },
+
   "include": [
-    "src/**/*",
+    "src/**/*.ts",
+    // "src/main.ts",
+    // "src/app.module.ts",
+    // "src/common/**/*.ts",
+    // "src/app.controller.ts",
+    // "src/mikro-orm.config.ts",
+    // "src/cats/*",
     "test/**/*.ts",
     "scripts/**/*.ts"
-  ],
+  ]
 }

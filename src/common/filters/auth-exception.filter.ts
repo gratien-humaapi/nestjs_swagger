@@ -5,11 +5,10 @@ import {
   HttpException
 } from "@nestjs/common";
 import { Request, Response } from "express";
-import { CognitoError } from "src/cognito";
 
-@Catch(CognitoError)
+// @Catch(CognitoError)
 export class AuthClienExceptionFilter implements ExceptionFilter {
-  catch(exception: CognitoError, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const { message, statusCode, name } = exception;

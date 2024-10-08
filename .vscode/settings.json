@@ -7,7 +7,7 @@
   // },
   // "files.eol": "\n"
   // "jestrunner.jestCommand": "npm run test:e2e",
-  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "typescript.tsdk": "node_modules/typescript/lib",
   "jest.autoRun": "off",
   // "jest.jestCommandLine": "npm run test:e2e",
   // "jest.rootPath": "."

@@ -3,7 +3,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Property, Filter, Entity } from "@mikro-orm/core";
-import { HideField, ObjectType } from "@nestjs/graphql";
 import { IsUUID } from "class-validator";
 import { CustomBaseEntity } from "./base.entity";
 
@@ -18,7 +17,6 @@ type OptionalProps = "modifiedBy" | "tenantId" | "ownerId";
   }),
   default: true
 })
-@ObjectType({ isAbstract: true })
 @Entity({ abstract: true })
 export abstract class BaseEntityWithTU<
   Repository = "",
@@ -37,7 +35,6 @@ export abstract class BaseEntityWithTU<
   ownerId: string;
 
   @Property({ type: "uuid" })
-  @HideField()
   @IsUUID()
   tenantId: string;
 }

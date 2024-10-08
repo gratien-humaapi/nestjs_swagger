@@ -1,46 +1,41 @@
-/* eslint-disable @typescript-eslint/no-inferrable-types */
-import {
-  InputType,
-  IntersectionType,
-  OmitType,
-  PickType
-} from "@nestjs/graphql";
-import { IsBoolean, IsString } from "class-validator";
-import { AuthUser } from "src/admin/entities";
-import { User } from "../entities/user.entity";
+// /* eslint-disable @typescript-eslint/no-inferrable-types */
 
-const userInput = OmitType(
-  OmitType(
-    User,
-    ["createdAt", "updatedAt", "id", "isActive"] as const,
-    InputType
-  ),
-  ["authData"]
-);
+// import { IsBoolean, IsString } from "class-validator";
+// import { AuthUser } from "src/admin/entities";
+// import { User } from "../entities/user.entity";
 
-const authInput = PickType(
-  AuthUser,
-  ["attributes", "username"] as const,
-  InputType
-);
+// const userInput = OmitType(
+//   OmitType(
+//     User,
+//     ["createdAt", "updatedAt", "id", "isActive"] as const,
+//     InputType
+//   ),
+//   ["authData"]
+// );
 
-@InputType()
-export class CreateUserInput extends IntersectionType(userInput, authInput) {
-  @IsString()
-  temporaryPassword: string;
+// const authInput = PickType(
+//   AuthUser,
+//   ["attributes", "username"] as const,
+//   InputType
+// );
 
-  /** whether the temporary password should be permanent or not */
-  // @IsBoolean()
-  permanent: boolean = false;
+// @InputType()
+// export class CreateUserInput extends IntersectionType(userInput, authInput) {
+//   @IsString()
+//   temporaryPassword: string;
 
-  companyId: string;
+//   /** whether the temporary password should be permanent or not */
+//   // @IsBoolean()
+//   permanent: boolean = false;
 
-  ownerId: string;
+//   companyId: string;
 
-  tenantId: string;
+//   ownerId: string;
 
-  @IsBoolean()
-  sendPassword: boolean = false;
+//   tenantId: string;
 
-  desiredDeliveryMediums?: string[];
-}
+//   @IsBoolean()
+//   sendPassword: boolean = false;
+
+//   desiredDeliveryMediums?: string[];
+// }

@@ -4,6 +4,7 @@ import helmet from "helmet";
 import { ConfigService } from "@nestjs/config";
 import express from "express";
 import { AppModule } from "./app.module";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -31,6 +32,18 @@ async function bootstrap() {
         configService.get("NODE_ENV") === "dev" ? false : undefined
     })
   ); // Set sensible headers for improved security
+
+  const config = new DocumentBuilder()
+    .setTitle("Cats example")
+    .setDescription("The cats API description")
+    .setVersion("1.0")
+    // .addTag("cats")
+    .build();
+  const document = SwaggerModule.createDocument(app, config, {
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey
+  });
+  SwaggerModule.setup("api", app, document, {jsonDocumentUrl: "openapi.json"});
+
   await app.listen(3001);
 }
 bootstrap();

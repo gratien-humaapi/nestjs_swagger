@@ -1,41 +1,42 @@
-import { LoadStrategy, Options } from "@mikro-orm/core";
-import { ConfigService } from "@nestjs/config";
+import { LoadStrategy } from "@mikro-orm/core";
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
 import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
-import { CurrentUserORMSuscriber } from "./authorization/suscribers";
+import {
+  defineConfig,
+  Options
+} from "@mikro-orm/sqlite";
+import { ConfigService } from "@nestjs/config";
 
 const configService = new ConfigService();
 
-const MikroOrmConfig: Options = {
-  // allowGlobalContext: true,
-  entities: ["dist/**/*.entity.js"],
-  entitiesTs: ["src/**/*.entity.ts"],
-  // db config
-  type: "postgresql",
-  dbName: configService.get("POSTGRES_DB"),
-  user: configService.get("POSTGRES_USER"),
-  password: configService.get("POSTGRES_PASSWORD"),
-  host: configService.get("POSTGRES_HOST"),
-  port: configService.get("POSTGRES_PORT"),
-  // db config
-  metadataProvider: TsMorphMetadataProvider,
+const MikroOrmConfig: Options = defineConfig({
+  // for simplicity, we use the SQLite database, as it's available pretty much everywhere
+  dbName: "sqlite.db",
+  // folder based discovery setup, using common filename suffix
+  entities: ["dist/cats/entities/*.entity.js"],
+  entitiesTs: ["src/cats/entities/*.entity.ts"],
+  // enable debug mode to log SQL queries and discovery information
   debug: configService.get("NODE_ENV") !== "production",
-  loadStrategy: LoadStrategy.JOINED,
+  // for vitest to get around `TypeError: Unknown file extension ".ts"` (ERR_UNKNOWN_FILE_EXTENSION)
+  dynamicImportProvider: (id) => import(id),
+  // for highlighting the SQL queries
   highlighter: new SqlHighlighter(),
+  loadStrategy: LoadStrategy.JOINED,
+  metadataProvider: TsMorphMetadataProvider,
   migrations: {
     path: "dist/migrations",
     pathTs: "src/migrations",
     snapshot: false // change to "true" after dev iteration
   },
   // seeder
-  seeder: {
-    path: "dist/seeder",
-    pathTs: "src/seeder",
-    // defaultSeeder: "DatabaseSeeder",
-    glob: "*.{js,ts}",
-    emit: "ts",
-    fileName: (className: string) => className
-  }
-};
+  // seeder: {
+  //   path: "dist/seeder",
+  //   pathTs: "src/seeder",
+  //   // defaultSeeder: "DatabaseSeeder",
+  //   glob: "*.{js,ts}",
+  //   emit: "ts",
+  //   fileName: (className: string) => className
+  // }
+});
 
 export default MikroOrmConfig;

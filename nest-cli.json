@@ -4,19 +4,7 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "plugins": [
-      {
-        "name": "@nestjs/graphql",
-        "options": {
-          "typeFileNameSuffix": [
-            ".embedded.ts",
-            ".input.ts",
-            ".args.ts",
-            ".entity.ts",
-            ".model.ts"
-          ],
-          "introspectComments": true
-        }
-      }
+    
     ]
   },
   "introspectComments": true
