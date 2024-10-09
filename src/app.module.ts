@@ -4,11 +4,15 @@ import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { CatsModule } from "./cats/cats.module";
+import { GithubModule } from "./github/github.module";
+import { CodeFileModule } from "./code-files/code-file.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     MikroOrmModule.forRoot(),
+    GithubModule,
+    CodeFileModule,
     CatsModule
   ],
 })
