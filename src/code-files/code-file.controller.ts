@@ -3,12 +3,14 @@ import {
   Controller,
   Get,
   Param,
-  ParseUUIDPipe
+  ParseUUIDPipe,
+  Query
 } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags
 } from "@nestjs/swagger";
 import { ValidationRequestException } from "src/common/errors";
@@ -16,21 +18,18 @@ import { HMValidationPipe } from "../common/pipes";
 import { CodeFileService } from "./code-file.service";
 import { CreateCodeFileDto } from "./dto";
 import { CodeFile } from "./entities/code-file.entity";
-
+import { GetCodeFileDto } from "./dto/get-code-file.dto";
 
 export class FindDto {
   repositoryName: string;
   filePath: string;
 }
 
-class FindAllDto {
-
-}
-
+class FindAllDto {}
 
 @Controller("files")
 @ApiTags("files")
-@ApiBadRequestResponse({  type: ValidationRequestException})
+@ApiBadRequestResponse({ type: ValidationRequestException })
 export class CodeFileController {
   constructor(private codeFileService: CodeFileService) {}
 
@@ -50,7 +49,6 @@ export class CodeFileController {
   //   return  this.codeFileService.update(id, dto);
   // }
 
-
   // @Delete(":id")
   // @ApiOkResponse({type: OkResponse})
   // async removeCodeFile(
@@ -59,7 +57,6 @@ export class CodeFileController {
   //   return  this.codeFileService.remove(id);
   // }
 
-  
   @Get()
   @ApiOkResponse({ type: [CodeFile] })
   @ApiForbiddenResponse({ description: "Forbidden." })
@@ -68,14 +65,18 @@ export class CodeFileController {
   }
 
   @Get(":name")
-  @ApiOkResponse({type: CodeFile})
-  async findCodeFileByName(@Param("name") name: string, @Body(new HMValidationPipe()) dto: FindDto) {
+  @ApiOkResponse({ type: CodeFile })
+  async findCodeFileByName(
+    @Param("name") name: string,
+    @Query() dto: GetCodeFileDto
+  ) {
+    console.log(dto);
+
     return this.codeFileService.findOneByName(name, dto);
   }
 
-
   @Get(":id")
-  @ApiOkResponse({type: CodeFile})
+  @ApiOkResponse({ type: CodeFile })
   async findCodeFileById(@Param("id", ParseUUIDPipe) id: string) {
     return this.codeFileService.findOneById(id);
   }

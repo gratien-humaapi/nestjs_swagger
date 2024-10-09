@@ -43,7 +43,7 @@ class CodeFunction {
 - **Méthode :** `Get`
 - **URL :** `/files/<name>`
 - **Description :** Cet endpoint permet de récupérer les métadonnées d'un fichier présent dans un dépôt GitHub en passant le nom du repository et le chemin du fichier.
-- **Body :**
+- **QueryParam :**
   ```json
   {
     "repositoryName": "username/repository",
@@ -77,7 +77,7 @@ class CodeFunction {
 - **Méthode :** `Get`
 - **URL :** `/files/<id>`
 - **Description :** Cet endpoint permet de récupérer les métadonnées d'un fichier présent dans un dépôt GitHub en passant le nom du repository et le chemin du fichier.
-- **Body :**
+- **QueryParam :**
   ```json
   {
     "repositoryName": "username/repository",
@@ -111,7 +111,7 @@ class CodeFunction {
 - **Méthode :** `Get`
 - **URL :** `/files`
 - **Description :** Cet endpoint permet de lister tous les fichiers utiles du projet. Privilégiés le code .ts, .go, .jave. On définira plus tard s’il sera nécessaire de récupérer les autres types de fichiers 
-- **Body :**
+- **QueryParam :**
   ```json
   {
     "repositoryName": "username/repository",

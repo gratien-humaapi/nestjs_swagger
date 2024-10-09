@@ -7,8 +7,8 @@
   },
   
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "CommonJS",
+    // "moduleResolution": "NodeNext",
     "allowJs": true,
     "declaration": true, // it clash with package inference
     "removeComments": true,
@@ -16,7 +16,7 @@
     // "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2017",
+    "target": "ES2022",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": ".",

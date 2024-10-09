@@ -1,11 +1,11 @@
 /* eslint-disable import/order */
 import { MikroORM } from "@mikro-orm/core";
+import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { CatsModule } from "./cats/cats.module";
-import { GithubModule } from "./github/github.module";
 import { CodeFileModule } from "./code-files/code-file.module";
+import { GithubModule } from "./github/github.module";
 
 @Module({
   imports: [

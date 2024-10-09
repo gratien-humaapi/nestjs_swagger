@@ -8,11 +8,6 @@ import { CodeFileRepository } from "../code-file.repository";
 
 type CustomOptionalProps = "isActive" | "description";
 
-class CodeFunction {
-  id: string // Identifiant unique de la fonction.
-  name: string // nom de la fonction.
-  fileId?: string //Identifiant du fichier dans lequel la fonction est déclarée. Ce champ est optionnel.
-}
 
 @Entity({ repository: () => CodeFileRepository })
 export class CodeFile extends CustomBaseEntity<
@@ -25,11 +20,11 @@ export class CodeFile extends CustomBaseEntity<
   @IsString()
   name: string;
 
-  @Property()
-  @ApiProperty({
-    description: "Ensemble des fonctions internes et externes au fichier"
-  })
-  functions: CodeFunction[];
+  // @Property()
+  // @ApiProperty({
+  //   description: "Ensemble des fonctions internes et externes au fichier"
+  // })
+  // functions: CodeFunction[];
 
   @Property()
   @ApiProperty({ description: "Chemin du fichier sans le nom du fichier." })

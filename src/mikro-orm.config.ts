@@ -13,8 +13,8 @@ const MikroOrmConfig: Options = defineConfig({
   // for simplicity, we use the SQLite database, as it's available pretty much everywhere
   dbName: "sqlite.db",
   // folder based discovery setup, using common filename suffix
-  entities: ["dist/cats/entities/*.entity.js"],
-  entitiesTs: ["src/cats/entities/*.entity.ts"],
+  entities: ["dist/**/*.entity.js"],
+  entitiesTs: ["src/**/*.entity.ts"],
   // enable debug mode to log SQL queries and discovery information
   debug: configService.get("NODE_ENV") !== "production",
   // for vitest to get around `TypeError: Unknown file extension ".ts"` (ERR_UNKNOWN_FILE_EXTENSION)
