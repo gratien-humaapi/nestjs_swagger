@@ -25,7 +25,8 @@ export class CodeFileService {
     const {filePath,repositoryName} =dto;
     const splittedRepoName = repositoryName.split("/");
 
-    this.githubService.getFileGithub(splittedRepoName[0], splittedRepoName[1], `${filePath}/${name}`);
+  const content = await this.githubService.getFileGithub(splittedRepoName[0], splittedRepoName[1], `${filePath}/${name}`);
+    
   };
 
   remove = async (id: string) => {

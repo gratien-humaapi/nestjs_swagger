@@ -2662,17 +2662,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.7":
-  version: 1.7.7
-  resolution: "axios@npm:1.7.7"
-  dependencies:
-    follow-redirects: "npm:^1.15.6"
-    form-data: "npm:^4.0.0"
-    proxy-from-env: "npm:^1.1.0"
-  checksum: 10c0/4499efc89e86b0b49ffddc018798de05fab26e3bf57913818266be73279a6418c3ce8f9e934c7d2d707ab8c095e837fc6c90608fb7715b94d357720b5f568af7
-  languageName: node
-  linkType: hard
-
 "babel-jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "babel-jest@npm:29.7.0"
@@ -4456,7 +4445,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^8.8.1"
     "@typescript-eslint/parser": "npm:^8.8.1"
     await-to-js: "npm:^3.0.0"
-    axios: "npm:^1.7.7"
     camelcase-keys: "npm:^9.1.3"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.14.1"
@@ -4482,6 +4470,9 @@ __metadata:
     rxjs: "npm:^7.8.1"
     source-map-support: "npm:^0.5.21"
     supertest: "npm:^7.0.0"
+    tree-sitter: "npm:^0.21.1"
+    tree-sitter-javascript: "npm:^0.23.0"
+    tree-sitter-typescript: "npm:^0.23.0"
     ts-jest: "npm:^29.2.5"
     ts-loader: "npm:^9.5.1"
     ts-node: "npm:^10.9.2"
@@ -4507,16 +4498,6 @@ __metadata:
   version: 3.3.1
   resolution: "flatted@npm:3.3.1"
   checksum: 10c0/324166b125ee07d4ca9bcf3a5f98d915d5db4f39d711fba640a3178b959919aae1f7cfd8aabcfef5826ed8aa8a2aa14cc85b2d7d18ff638ddf4ae3df39573eaf
-  languageName: node
-  linkType: hard
-
-"follow-redirects@npm:^1.15.6":
-  version: 1.15.9
-  resolution: "follow-redirects@npm:1.15.9"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: 10c0/5829165bd112c3c0e82be6c15b1a58fa9dcfaede3b3c54697a82fe4a62dd5ae5e8222956b448d2f98e331525f05d00404aba7d696de9e761ef6e42fdc780244f
   languageName: node
   linkType: hard
 
@@ -6826,6 +6807,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-addon-api@npm:^8.0.0, node-addon-api@npm:^8.1.0":
+  version: 8.2.0
+  resolution: "node-addon-api@npm:8.2.0"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10c0/e7d45167bbed5ccc6e91c35544a58c1d1a601307595a031a8a151770ba6240af952962a7d42d2605a29ed5bed274aa5db5d894b3539903368f06688219cbbf02
+  languageName: node
+  linkType: hard
+
 "node-emoji@npm:1.11.0":
   version: 1.11.0
   resolution: "node-emoji@npm:1.11.0"
@@ -6846,6 +6836,17 @@ __metadata:
     encoding:
       optional: true
   checksum: 10c0/b55786b6028208e6fbe594ccccc213cab67a72899c9234eb59dba51062a299ea853210fcf526998eaa2867b0963ad72338824450905679ff0fa304b8c5093ae8
+  languageName: node
+  linkType: hard
+
+"node-gyp-build@npm:^4.8.0, node-gyp-build@npm:^4.8.2":
+  version: 4.8.2
+  resolution: "node-gyp-build@npm:4.8.2"
+  bin:
+    node-gyp-build: bin.js
+    node-gyp-build-optional: optional.js
+    node-gyp-build-test: build-test.js
+  checksum: 10c0/d816b43974d31d6257b6e87d843f2626c72389a285208394bc57a7766b210454d2642860a5e5b5c333d8ecabaeabad3b31b94f58cf8ca1aabdef0c320d02baaa
   languageName: node
   linkType: hard
 
@@ -7572,13 +7573,6 @@ __metadata:
     forwarded: "npm:0.2.0"
     ipaddr.js: "npm:1.9.1"
   checksum: 10c0/c3eed999781a35f7fd935f398b6d8920b6fb00bbc14287bc6de78128ccc1a02c89b95b56742bf7cf0362cc333c61d138532049c7dedc7a328ef13343eff81210
-  languageName: node
-  linkType: hard
-
-"proxy-from-env@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "proxy-from-env@npm:1.1.0"
-  checksum: 10c0/fe7dd8b1bdbbbea18d1459107729c3e4a2243ca870d26d34c2c1bcd3e4425b7bcc5112362df2d93cc7fb9746f6142b5e272fd1cc5c86ddf8580175186f6ad42b
   languageName: node
   linkType: hard
 
@@ -8646,6 +8640,49 @@ __metadata:
   bin:
     tree-kill: cli.js
   checksum: 10c0/7b1b7c7f17608a8f8d20a162e7957ac1ef6cd1636db1aba92f4e072dc31818c2ff0efac1e3d91064ede67ed5dc57c565420531a8134090a12ac10cf792ab14d2
+  languageName: node
+  linkType: hard
+
+"tree-sitter-javascript@npm:^0.23.0":
+  version: 0.23.0
+  resolution: "tree-sitter-javascript@npm:0.23.0"
+  dependencies:
+    node-addon-api: "npm:^8.1.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.2"
+  peerDependencies:
+    tree-sitter: ^0.21.1
+  peerDependenciesMeta:
+    tree-sitter:
+      optional: true
+  checksum: 10c0/772f213e4eae742c0321dec4d9d614ad505120d6555c4e05bcce7db4e54a183b549e3cfddc22f3e2c4394c01ee77795d32efefd6d5d427e02d6652ad14eded1f
+  languageName: node
+  linkType: hard
+
+"tree-sitter-typescript@npm:^0.23.0":
+  version: 0.23.0
+  resolution: "tree-sitter-typescript@npm:0.23.0"
+  dependencies:
+    node-addon-api: "npm:^8.1.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.2"
+  peerDependencies:
+    tree-sitter: ^0.21.0
+  peerDependenciesMeta:
+    tree_sitter:
+      optional: true
+  checksum: 10c0/ba8ef0aba590b71356a764f75bcc6033519f9deae71da24bf4b1ed467d9bbd373907c433a884a8afa708b82ed58b7ce0d848bc8a96a82952560bd679af1f460a
+  languageName: node
+  linkType: hard
+
+"tree-sitter@npm:^0.21.1":
+  version: 0.21.1
+  resolution: "tree-sitter@npm:0.21.1"
+  dependencies:
+    node-addon-api: "npm:^8.0.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.0"
+  checksum: 10c0/c144830c28ce588f5c5cf060390286ffece760636bfff03cf9110a7910504be3da6873d3bdc4faa9d5424433401122adbba605c9754bfd6fca63500265738ffb
   languageName: node
   linkType: hard
 

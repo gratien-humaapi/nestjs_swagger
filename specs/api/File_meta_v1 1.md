@@ -64,6 +64,7 @@ class CodeFunction {
           "fileID": "string"
         }
       ],
+      "repositoryName": "string",
       "path": "string"
     }
     ```
